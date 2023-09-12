@@ -1,0 +1,28 @@
+{
+    "manifest_version": 3,
+    "name": "iPhoneOrder.2023",
+    "description": "iPhoneOrder",
+    "version": "1.0",
+    "permissions": ["activeTab", "tabs", "scripting", "sidePanel"],
+    "host_permissions": [ "https://*.apple.com.cn/*"],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "action": {
+        "default_title": "Click to open panel"
+    },
+    "background": {
+        "service_worker": "service-worker.js"
+    },
+    "content_scripts": [
+        {
+          "js": ["content-script.js"],
+          "matches": [
+            "https://*.apple.com.cn/*"
+          ]
+        }
+    ]
+}
