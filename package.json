@@ -23,7 +23,7 @@
   "lint-staged": {
     "app/**/*.{js,jsx,ts,tsx}": [
       "npm run eslint:commit",
-      "prettier --single-quote --no-semi --trailing-comma es5 --print-width 120 --tab-width 4 --arrow-parens avoid --write  \"!app/lib/**\" \"!app/shared/**\"",
+      "prettier --single-quote --no-semi --trailing-comma es5 --print-width 120 --tab-width 4 --arrow-parens avoid --write  \"!app/lib/**\"",
       "git add"
     ]
   },
