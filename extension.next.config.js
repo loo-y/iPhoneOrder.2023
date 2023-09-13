@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+console.log(`BUILD_TYPE`, process.env.BUILD_TYPE)
 const nextConfig = {
     output: 'export',
     // Optional: Add a trailing slash to all paths `/about` -> `/about/`
