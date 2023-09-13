@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "bunbuild": "bun ./bunBuild.ts",
     "afterbuild": "node ./buildAfter.js",
     "build:extension": "cross-env-shell BUILD_TYPE=extension bun run build:extension:after",
     "build:extension:after": "bun run build && bun run afterbuild",
@@ -28,23 +29,31 @@
     ]
   },
   "dependencies": {
-    "@types/lodash": "^4.14.198",
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "cheerio": "^1.0.0-rc.12",
-    "cross-env": "^7.0.3",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "lodash": "^4.17.21",
     "next": "13.4.19",
     "postcss": "8.4.29",
     "pre-commit": "^1.2.2",
-    "prettier": "^3.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.15",
+    "@babel/core": "^7.22.17",
+    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-typescript": "^7.22.15",
+    "@types/lodash": "^4.14.198",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "cross-env": "^7.0.3",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3"
   }
 }
