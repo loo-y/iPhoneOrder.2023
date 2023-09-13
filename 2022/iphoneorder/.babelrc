@@ -1,0 +1,18 @@
+{
+    "presets": [
+        "@babel/preset-typescript",
+        [
+            "@babel/preset-env",
+            {
+                "useBuiltIns": "entry",
+                "corejs": 3,
+                "targets": {
+                    "chrome": 88
+                }
+            }
+        ]
+    ],
+    "plugins": [
+      ["transform-remove-console", { "exclude": [ "error", "warn"] }]
+    ]
+}

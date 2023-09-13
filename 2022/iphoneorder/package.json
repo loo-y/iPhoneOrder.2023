@@ -1,0 +1,56 @@
+{
+  "name": "iphoneorder",
+  "version": "1.0.0",
+  "description": "get iPhone order automatically",
+  "main": "iPhoneOrder.js",
+  "scripts": {
+    "cleardist": "rm -rf ./dist/*",
+    "prettier": "prettier --write src",
+    "babeldist": "npm run cleardist && babel src -d dist -x \".ts, .tsx\"",
+    "babelbuild": "npm run cleardist && babel src/index.ts --out-file dist/index.js",
+    "builddev": "npm run babeldist && webpack --mode development",
+    "build": "npm run babeldist && webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "prettier --single-quote --no-semi --trailing-comma es5 --print-width 120 --tab-width 4 --arrow-parens avoid --write",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loo-y/iPhoneOrder.git"
+  },
+  "keywords": [
+    "iPhone",
+    "iPhoneOrder"
+  ],
+  "author": "loo-y@outlook.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loo-y/iPhoneOrder/issues"
+  },
+  "homepage": "https://github.com/loo-y/iPhoneOrder#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.3",
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/lodash": "^4.14.186",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "core-js": "^3.25.3",
+    "husky": "^8.0.1",
+    "lint-staged": "^8.2.1",
+    "prettier": "^2.7.1",
+    "ts-loader": "^9.4.1",
+    "tsc": "^2.0.4",
+    "typescript": "^4.8.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
