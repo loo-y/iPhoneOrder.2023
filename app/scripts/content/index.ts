@@ -1,8 +1,11 @@
 console.log(`this is content`)
 import { iPhoneModels } from '@/app/shared/constants'
-import doFroApplePages from '@/app/scripts/content/doFroApplePages'
+import doFroApplePages from './doFroApplePages'
+import getPageInitInfo from './getPageInitInfo'
 
 const contentRun = async () => {
+    const pageInfo = await getPageInitInfo()
+    console.log(`getPageInitInfo, `, pageInfo)
     await doFroApplePages()
     // 重写pushStae方法，用来监听
     let pushState = history.pushState

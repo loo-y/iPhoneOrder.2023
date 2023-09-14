@@ -1,4 +1,5 @@
-export const sleep = async (sec: number | string) => {
+export const sleep = async (sec: number | string, markText?: string) => {
+    console.log(`sleep seconds:`, sec, markText || '')
     return new Promise((resolve, reject) => {
         setTimeout(
             () => {
@@ -20,6 +21,11 @@ export const changeInputValue = (inputDom?: HTMLInputElement, newText?: any) => 
         tracker.setValue(lastvalue)
     }
     inputDom.dispatchEvent(event)
+}
+
+export const getElemByID = (idname: string) => {
+    if (!idname) return null
+    return document.getElementById(idname) || document.querySelector(`#${idname}`) || null
 }
 
 interface ArrayOrObject extends Record<string, any> {}

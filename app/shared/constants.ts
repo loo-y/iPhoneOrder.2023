@@ -66,6 +66,9 @@ export const pageElementsId = {
         applePasswordInput: `signIn.customerLogin.password`,
         loginSubmitButton: `signin-submit-button`,
         guestLoginButon: `signIn.guestLogin.guestLogin`,
+        dataHandleByAppleCheckbox: `signIn.consentOverlay.dataHandleByApple`,
+        dataOutSideMyCountryCheckbox: `signIn.consentOverlay.dataOutSideMyCountry`,
+        acceptButton: `consent-overlay-accept-button`,
     },
     checkout: {
         continuebutton: `rs-checkout-continue-button-bottom`,

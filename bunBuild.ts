@@ -16,7 +16,7 @@ async function bunBuild() {
     await Bun.build({
         entrypoints: [contentScript, injectScript],
         target: 'browser', 
-        // minify: true,
+        minify: true,
         outdir: outDir,
         naming: "[dir]-script.[ext]"
     })
