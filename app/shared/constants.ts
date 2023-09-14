@@ -39,3 +39,8 @@ export const iPhoneModels = {
         { color: { value: 'primary', text: '原色钛金属' }, capacity: '1TB', model: 'MU603CH/A' },
     ],
 }
+
+export const applePageUrl = {
+    shoppingCart: `https://www.apple.com.cn/shop/bag`,
+    buyiPhone: `https://www.apple.com.cn/shop/buy-iphone`,
+}
