@@ -21,3 +21,44 @@ export const changeInputValue = (inputDom?: HTMLInputElement, newText?: any) => 
     }
     inputDom.dispatchEvent(event)
 }
+
+interface ArrayOrObject extends Record<string, any> {}
+interface ArrayOrObject extends Array<any> {}
+
+export const saveToStorage = <T extends ArrayOrObject>(arrayOrObject: T, storeName: string): void => {
+    let msg = ''
+    // @ts-ignore
+    if (typeof chrome === 'undefined' || !chrome?.tabs) {
+        msg = 'Please use as chrome extension'
+        return
+    }
+    console.log(`save to store`, arrayOrObject)
+    const storedValue = restoreFromStorage()
+    const storeValue = { ...storedValue, [storeName]: arrayOrObject }
+    // @ts-ignore
+    chrome.storage.sync.set(storeValue)
+}
+
+export const restoreFromStorage = async <T extends ArrayOrObject>(storeName?: string): Promise<T> => {
+    let msg = ''
+    // @ts-ignore
+    if (typeof chrome === 'undefined' || !chrome?.tabs) {
+        msg = 'Please use as chrome extension'
+        return {} as T
+    }
+
+    return new Promise<T>((resolve, reject) => {
+        // @ts-ignore
+        chrome.storage.sync.get(null, (items: any) => {
+            if (!storeName) {
+                resolve({ ...items })
+            } else {
+                const value = items?.[storeName] || {}
+                resolve(value)
+            }
+        })
+    }).catch(e => {
+        console.error(e)
+        return {} as T
+    })
+}
