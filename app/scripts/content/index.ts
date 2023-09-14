@@ -2,8 +2,13 @@ console.log(`this is content`)
 import { iPhoneModels } from '@/app/shared/constants'
 import doFroApplePages from './doFroApplePages'
 import getPageInitInfo from './getPageInitInfo'
+import { restoreFromStorage } from '@/app/shared/util'
+import { storeKeys } from '@/app/shared/constants'
 
 const contentRun = async () => {
+    const orderEnabled = !!(await restoreFromStorage(storeKeys.orderEnabled))
+    console.log(`orderEnabled`, orderEnabled)
+    if (!orderEnabled) return
     const pageInfo = await getPageInitInfo()
     console.log(`getPageInitInfo, `, pageInfo)
     await doFroApplePages()

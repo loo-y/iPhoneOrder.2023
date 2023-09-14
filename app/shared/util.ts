@@ -28,29 +28,28 @@ export const getElemByID = (idname: string) => {
     return document.getElementById(idname) || document.querySelector(`#${idname}`) || null
 }
 
-interface ArrayOrObject extends Record<string, any> {}
-interface ArrayOrObject extends Array<any> {}
+type TValue = string | Record<string, any> | Array<any> | null | number | boolean
 
-export const saveToStorage = <T extends ArrayOrObject>(arrayOrObject: T, storeName: string): void => {
+export const saveToStorage = async <T extends TValue>(tValue: T, storeName: string): Promise<void> => {
     let msg = ''
     // @ts-ignore
     if (typeof chrome === 'undefined' || !chrome?.tabs) {
         msg = 'Please use as chrome extension'
         return
     }
-    console.log(`save to store`, arrayOrObject)
-    const storedValue = restoreFromStorage()
-    const storeValue = { ...storedValue, [storeName]: arrayOrObject }
+    console.log(`save to store`, tValue)
+    const storedValue = (await restoreFromStorage()) as Record<string, any>
+    const storeValue = { ...storedValue, [storeName]: tValue }
     // @ts-ignore
     chrome.storage.sync.set(storeValue)
 }
 
-export const restoreFromStorage = async <T extends ArrayOrObject>(storeName?: string): Promise<T> => {
+export const restoreFromStorage = async <T extends TValue>(storeName?: string): Promise<T> => {
     let msg = ''
     // @ts-ignore
     if (typeof chrome === 'undefined' || !chrome?.tabs) {
         msg = 'Please use as chrome extension'
-        return {} as T
+        return null as T
     }
 
     return new Promise<T>((resolve, reject) => {

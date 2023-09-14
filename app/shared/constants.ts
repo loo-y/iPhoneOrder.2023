@@ -40,6 +40,12 @@ export const iPhoneModels = {
     ],
 }
 
+// keys
+export enum storeKeys {
+    orderEnabled = `orderEnabled`,
+    orderConfig = `orderConfig`,
+}
+
 export const applePageUrl = {
     shoppingCart: `https://www.apple.com.cn/shop/bag`,
     buyiPhone: `https://www.apple.com.cn/shop/buy-iphone`,
