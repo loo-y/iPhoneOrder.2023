@@ -1,7 +1,6 @@
 console.log(`this is content`)
-import {iPhoneModels} from '@/app/shared/constants'
+import { iPhoneModels } from '@/app/shared/constants'
 import doFroApplePages from '@/app/scripts/content/doFroApplePages'
-
 
 const contentRun = async () => {
     await doFroApplePages()
@@ -12,14 +11,14 @@ const contentRun = async () => {
         if (typeof history.onpushstate == 'function') {
             history.onpushstate({ state: state })
         }
-    
+
         console.log(`arguments`, args)
         let url: string = (args[2] as string) || ''
         url = url && url.search(/^http/) > -1 ? url : ''
-        
+
         let pushResult = pushState.apply(history, args)
         console.log(`history`, history.length, location.href)
-    
+
         await doFroApplePages(url)
         return pushResult
     }

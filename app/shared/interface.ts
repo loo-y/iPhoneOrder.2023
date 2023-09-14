@@ -1,4 +1,4 @@
-export interface IPHONEORDERCONFIG {
+export interface IPHONEORDER_CONFIG {
     lastName?: string
     firstName?: string
     mobile?: string | number

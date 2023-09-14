@@ -44,3 +44,56 @@ export const applePageUrl = {
     shoppingCart: `https://www.apple.com.cn/shop/bag`,
     buyiPhone: `https://www.apple.com.cn/shop/buy-iphone`,
 }
+
+// ********** 👇page Element👇 **********
+const prefixCheckout = `checkout`
+const prefixPickupContact = `${prefixCheckout}.pickupContact`
+const prefixSelfPickupContact = `${prefixPickupContact}.selfPickupContact`
+const prefixSelfContact = `${prefixSelfPickupContact}.selfContact`
+const prefixAddressCheckout = `${prefixSelfContact}.address`
+
+const prefixNationalIdSelf = `${prefixSelfPickupContact}.nationalIdSelf`
+
+const prefixBill = `${prefixCheckout}.billing`
+const prefixBillingoptions = `${prefixBill}.billingoptions`
+
+export const pageElementsId = {
+    shoppingCart: {
+        checkoutButton: `shoppingCart.actions.navCheckout`,
+    },
+    signIn: {
+        appleIdInput: `signIn.customerLogin.appleId`,
+        applePasswordInput: `signIn.customerLogin.password`,
+        loginSubmitButton: `signin-submit-button`,
+        guestLoginButon: `signIn.guestLogin.guestLogin`,
+    },
+    checkout: {
+        continuebutton: `rs-checkout-continue-button-bottom`,
+        fulfillment: {
+            selectPickupButton: `fulfillmentOptionButtonGroup1`,
+        },
+        pickupContact: {
+            lastName: `${prefixAddressCheckout}.lastName`,
+            firstName: `${prefixAddressCheckout}.firstName`,
+            emailAddress: `${prefixAddressCheckout}.emailAddress`,
+            mobile: `${prefixAddressCheckout}.fullDaytimePhone`,
+            last4Id: `${prefixNationalIdSelf}.nationalIdSelf`,
+        },
+        bill: {
+            alipay: `${prefixBillingoptions}.alipay`,
+            wechat: `${prefixBillingoptions}.wechat`,
+        },
+    },
+}
+
+// ********** 👆page Element👆 **********
+
+// 付款方式
+export enum BILL_OPTIONS_TYPE {
+    alipay = `支付宝`,
+    wechat =  `微信`,
+    ccb = `建设银行`,
+    cmb = `招商银行`,
+    icbc = `工商银行`,
+    huabei =`花呗`,
+}
