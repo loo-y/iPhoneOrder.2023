@@ -91,9 +91,9 @@ export const pageElementsId = {
 // 付款方式
 export enum BILL_OPTIONS_TYPE {
     alipay = `支付宝`,
-    wechat =  `微信`,
+    wechat = `微信`,
     ccb = `建设银行`,
     cmb = `招商银行`,
     icbc = `工商银行`,
-    huabei =`花呗`,
+    huabei = `花呗`,
 }

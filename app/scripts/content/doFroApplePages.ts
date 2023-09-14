@@ -19,7 +19,7 @@ let iPhoneOrderConfig: IPHONEORDER_CONFIG = {
     cityName: undefined,
     districtName: undefined,
     provinceName: undefined,
-    employeeId: undefined
+    employeeId: undefined,
 }
 
 const doFroApplePages = async (url?: string) => {
