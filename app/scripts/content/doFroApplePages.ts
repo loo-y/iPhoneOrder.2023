@@ -1,12 +1,9 @@
 import { sleep, changeInputValue, getElemByID } from '@/app/shared/util'
-import { applePageUrl, pageElementsId, BILL_OPTIONS_TYPE } from '@/app/shared/constants'
+import { applePageUrl, pageElementsId, BILL_OPTIONS_TYPE, billTypeKeys } from '@/app/shared/constants'
 import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
 import getPageInitInfo from './getPageInitInfo'
 import goOrderSteps from './goOrderSteps'
 import { mapValues as _mapValues } from 'lodash'
-const payBillType = _mapValues(BILL_OPTIONS_TYPE, (v, k) => {
-    return k
-})
 
 let iPhoneOrderConfig: IPHONEORDER_CONFIG = {
     lastName: undefined,
@@ -16,7 +13,8 @@ let iPhoneOrderConfig: IPHONEORDER_CONFIG = {
     appleId: undefined, // same as email
     password: undefined,
     stepWait: 10,
-    payBill: payBillType.alipay,
+    // @ts-ignore
+    payBill: billTypeKeys.alipay,
     payInstallment: 0,
     cityName: undefined,
     districtName: undefined,
@@ -108,6 +106,7 @@ const doFroApplePages = async (url?: string) => {
                 await goOrderSteps({
                     partNumber,
                     x_aos_stk,
+                    iPhoneOrderConfig,
                 })
             }
         }

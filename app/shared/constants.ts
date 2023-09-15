@@ -101,6 +101,9 @@ export const pageElementsId = {
 
 // ********** 👆page Element👆 **********
 
+// 重试次数超过之后重新刷新页面
+export const afterCountThenReload = 50
+
 // 付款方式
 export enum BILL_OPTIONS_TYPE {
     alipay = `支付宝`,
@@ -143,6 +146,7 @@ export const billItemList = [
 
 export const defaultiPhoneOrderConfig: IPHONEORDER_CONFIG = {
     stepWait: 1000,
+    // @ts-ignore
     payBill: billTypeKeys.alipay,
 }
 
@@ -172,3 +176,43 @@ export const defaultPayinstallmentTotal = [
         includes: [billTypeKeys.ccb, billTypeKeys.cmb, billTypeKeys.icbc],
     },
 ]
+
+export const commonHeaders = {
+    accept: '*/*',
+    'accept-language': 'zh-CN,zh;q=0.9',
+    'sec-ch-ua': '"Google Chrome";v="105", "Not)A;Brand";v="8", "Chromium";v="105"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    // "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+    referer: applePageUrl.buyiPhone,
+}
+
+export const fetchHeaders = {
+    ...commonHeaders,
+    'cache-control': 'no-cache',
+    'content-type': 'application/x-www-form-urlencoded',
+    modelversion: 'v2',
+    pragma: 'no-cache',
+    syntax: 'graviton',
+    // "x-aos-model-page": "checkoutPage",
+    // "x-aos-stk": x_aos_stk,
+    'x-requested-with': 'Fetch',
+}
+
+export const defaultAres = {
+    cityName: `上海`,
+    provinceName: `上海`,
+    districtName: `闵行区`,
+}
+
+export const CHECKOUT_STEPS = {
+    selectStore: `_a=select&_m=checkout.fulfillment.pickupTab.pickup.storeLocator`,
+    selectPickupTime: `_a=continue&_m=checkout.fulfillment`,
+    pickupContact: `_a=continue&_m=checkout.pickupContact`,
+    selectBill: `_a=selectBillingOptionAction&_m=checkout.billing.billingOptions`,
+    checkoutBill: `_a=continue&_m=checkout.billing`,
+    placeOrder: `_a=continue&_m=checkout.review.placeOrder`,
+}

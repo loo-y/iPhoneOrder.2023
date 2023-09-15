@@ -6,7 +6,7 @@ export interface IPHONEORDER_CONFIG {
     appleId?: string
     password?: string
     stepWait: number
-    payBill: string
+    payBill: 'alipay' | 'wechat' | 'ccb' | 'cmb' | 'icbc' | 'huabei'
     payInstallment?: number
     provinceName?: string
     cityName?: string
