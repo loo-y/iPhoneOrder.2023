@@ -1,28 +1,30 @@
 import { sleep, changeInputValue, getElemByID } from '@/app/shared/util'
-import { applePageUrl, pageElementsId, BILL_OPTIONS_TYPE, billTypeKeys } from '@/app/shared/constants'
+import { applePageUrl, pageElementsId, storeKeys } from '@/app/shared/constants'
 import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
 import getPageInitInfo from './getPageInitInfo'
 import goOrderSteps from './goOrderSteps'
 import { mapValues as _mapValues } from 'lodash'
+import { restoreFromStorage } from '@/app/shared/util'
 
-let iPhoneOrderConfig: IPHONEORDER_CONFIG = {
-    lastName: undefined,
-    firstName: undefined,
-    mobile: undefined,
-    last4code: undefined,
-    appleId: undefined, // same as email
-    password: undefined,
-    stepWait: 10,
-    // @ts-ignore
-    payBill: billTypeKeys.alipay,
-    payInstallment: 0,
-    cityName: undefined,
-    districtName: undefined,
-    provinceName: undefined,
-    employeeId: undefined,
-}
+// let iPhoneOrderConfig: IPHONEORDER_CONFIG = {
+//     lastName: undefined,
+//     firstName: undefined,
+//     mobile: undefined,
+//     last4code: undefined,
+//     appleId: undefined, // same as email
+//     password: undefined,
+//     stepWait: 10,
+//     // @ts-ignore
+//     payBill: billTypeKeys.alipay,
+//     payInstallment: 0,
+//     cityName: undefined,
+//     districtName: undefined,
+//     provinceName: undefined,
+//     employeeId: undefined,
+// }
 
 const doFroApplePages = async (url?: string) => {
+    const iPhoneOrderConfig: IPHONEORDER_CONFIG = await restoreFromStorage(storeKeys.orderConfig)
     await sleep(0.5)
 
     let queryString = new URLSearchParams(location.search.toLowerCase())
@@ -44,6 +46,7 @@ const doFroApplePages = async (url?: string) => {
             location.href = url
             return
         }
+        // await sleep(Math.random() * 2)
         goCheckoutBtn?.click()
         return
     }
@@ -76,6 +79,7 @@ const doFroApplePages = async (url?: string) => {
             // 没有账号信息就以游客登录
             let guestLoginBtn = getElemByID(signInElems.guestLoginButon)
             if (guestLoginBtn) {
+                console.log(`click guestLoginBtn`, guestLoginBtn)
                 guestLoginBtn.click()
             }
         }

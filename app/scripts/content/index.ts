@@ -9,8 +9,8 @@ const contentRun = async () => {
     const orderEnabled = !!(await restoreFromStorage(storeKeys.orderEnabled))
     console.log(`orderEnabled`, orderEnabled)
     if (!orderEnabled) return
-    const pageInfo = await getPageInitInfo()
-    console.log(`getPageInitInfo, `, pageInfo)
+    // const pageInfo = await getPageInitInfo()
+    // console.log(`getPageInitInfo, `, pageInfo)
     await doFroApplePages()
     // 重写pushStae方法，用来监听
     let pushState = history.pushState
@@ -33,3 +33,13 @@ const contentRun = async () => {
 }
 
 contentRun()
+
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//     // 处理接收到的消息
+//     console.log('Received message from background page:', request);
+//     if (request.message === 'contentRun') {
+//         contentRun()
+//     }
+//     // 发送响应（可选）
+//     sendResponse({ message: 'Response from content script' });
+// });

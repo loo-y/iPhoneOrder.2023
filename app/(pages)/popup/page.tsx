@@ -17,8 +17,7 @@ const Popup = () => {
     }, [])
 
     const handleConfirm = () => {
-        saveToStorage(orderEnabled, storeKeys.orderEnabled)
-        window.close()
+        confirmAsync(orderEnabled)
     }
     return (
         <div className="mx-auto my-2 w-[22rem] h-[17rem]">
@@ -101,4 +100,9 @@ const confirmLoad = async ({ callback }: ICondirmLoadProps) => {
         chrome.tabs.reload(tab.id)
         return
     }
+}
+
+const confirmAsync = async (orderEnabled: boolean) => {
+    await saveToStorage(orderEnabled, storeKeys.orderEnabled)
+    window.close()
 }

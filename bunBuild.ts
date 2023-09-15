@@ -9,12 +9,12 @@ async function bunBuild() {
     const injectScript = path.resolve(__dirname, './app/scripts/inject/')
     const builtInjectScript = path.resolve(outDir, "./out/inject-script.js");
 
-    // try{
-    //     rm(builtContentScript, {force: true, recursive: true}, ()=>{})
-    //     rm(builtInjectScript, {force: true, recursive: true}, ()=>{})
-    // }catch(e){
-    //     console.log(`rm failed, error:`, e)
-    // }
+    try{
+        rm(builtContentScript, {force: true, recursive: true}, ()=>{})
+        rm(builtInjectScript, {force: true, recursive: true}, ()=>{})
+    }catch(e){
+        console.log(`rm failed, error:`, e)
+    }
 
 
     // @ts-ignore

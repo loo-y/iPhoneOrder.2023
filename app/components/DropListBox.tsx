@@ -25,16 +25,25 @@ export default function DropListBox({ domID, title, itemList, selectedIndex, cal
         if (callback) callback(item)
     }
 
+    // useEffect(() => {
+    //     let newItem: DropItem
+    //     if (selectedIndex !== undefined) {
+    //         newItem = itemList[selectedIndex]
+    //     } else {
+    //         newItem = itemList[0]
+    //     }
+    //     setSelected(newItem)
+    //     if (callback) callback(newItem)
+    // }, [itemList, selectedIndex])
+
     useEffect(() => {
         let newItem: DropItem
         if (selectedIndex !== undefined) {
             newItem = itemList[selectedIndex]
-        } else {
-            newItem = itemList[0]
+            setSelected(newItem)
+            if (callback) callback(newItem)
         }
-        setSelected(newItem)
-        if (callback) callback(newItem)
-    }, [itemList, selectedIndex])
+    }, [selectedIndex])
 
     return (
         <Listbox value={selected} onChange={handleSelect}>

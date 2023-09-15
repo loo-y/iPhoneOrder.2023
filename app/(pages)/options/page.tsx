@@ -1,5 +1,5 @@
 'use client'
-import { restoreFromStorage, saveToStorage } from '@/app/shared/util'
+import { restoreFromStorage, saveToStorage, sleep } from '@/app/shared/util'
 import {
     storeKeys,
     billItemList,
@@ -9,8 +9,8 @@ import {
 } from '@/app/shared/constants'
 import DropListBox from '@/app/components/DropListBox'
 import { IPHONEORDER_CONFIG } from '@/app/shared/interface'
-import { useCallback, useEffect, useState } from 'react'
-import { filter as _filter, map as _map, find as _find } from 'lodash'
+import { useCallback, useEffect, useState, useRef, useMemo } from 'react'
+import { filter as _filter, map as _map, find as _find, findIndex as _findIndex } from 'lodash'
 import city from '@/app/shared/location/city.json'
 import province from '@/app/shared/location/province.json'
 import county from '@/app/shared/location/county.json'
@@ -19,15 +19,40 @@ const defaultItem = { id: '', name: '' }
 export default function Options() {
     const [config, setConfig] = useState<IPHONEORDER_CONFIG>(defaultiPhoneOrderConfig)
     const [payinstallmentList, setpayinstallmentList] = useState([defaultItem])
+    const [provinceList, setProvinceList] = useState([defaultItem])
+    const [selectedProviceIndex, setSelectedProviceIndex] = useState(0)
     const [cityList, setCityList] = useState([defaultItem])
     const [districtList, setDistrictList] = useState([defaultItem])
+    const firstNameRef = useRef<HTMLInputElement>(null)
+    const lastNameRef = useRef<HTMLInputElement>(null)
+    const last4codeRef = useRef<HTMLInputElement>(null)
+    const mobileRef = useRef<HTMLInputElement>(null)
+    const appleidRef = useRef<HTMLInputElement>(null)
+    const passwordRef = useRef<HTMLInputElement>(null)
+
     useEffect(() => {
         restoreFromStorage(storeKeys.orderConfig).then(data => {
             if (data) {
-                setConfig(data as IPHONEORDER_CONFIG)
+                console.log(`restoreFromStorage`, data)
+                setConfig(config => {
+                    return {
+                        ...config,
+                        ...(data as IPHONEORDER_CONFIG),
+                    }
+                })
             }
         })
     }, [])
+
+    const billSelected = useMemo(() => {
+        return (
+            (config?.payBill &&
+                _findIndex(billItemList, _b => {
+                    return _b.id == config.payBill
+                })) ||
+            0
+        )
+    }, [config.payBill])
 
     // ************ 👇下拉菜单联动👇 ************
     useEffect(() => {
@@ -52,14 +77,19 @@ export default function Options() {
 
     useEffect(() => {
         if (config.provinceName) {
-            const provinceId: string =
-                _find(province, item => {
-                    return item.name == config.provinceName
-                })?.id || ''
-            if (provinceId) {
-                // @ts-ignore
-                const newCityList = city[provinceId]
-                setCityList(newCityList)
+            let provinceIndex: number = _findIndex(province, item => {
+                return item.name == config.provinceName
+            })
+            provinceIndex = provinceIndex > -1 ? provinceIndex : 0
+
+            setSelectedProviceIndex(provinceIndex)
+            const provinceId = province[provinceIndex].id
+            // @ts-ignore
+            const newCityList = city[provinceId]
+            setCityList(newCityList)
+
+            if (provinceList.length < 1) {
+                setProvinceList(province)
             }
         }
     }, [config.provinceName])
@@ -118,6 +148,16 @@ export default function Options() {
 
     const handleSave = useCallback(() => {
         console.log(config)
+        const saveConfig: IPHONEORDER_CONFIG = {
+            ...config,
+            firstName: firstNameRef.current?.value,
+            lastName: lastNameRef.current?.value,
+            last4code: last4codeRef.current?.value,
+            mobile: mobileRef.current?.value,
+            appleId: appleidRef.current?.value,
+            password: passwordRef.current?.value,
+        }
+        saveAsync(saveConfig)
     }, [config])
 
     const handleCancel = useCallback(() => {
@@ -139,11 +179,13 @@ export default function Options() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    ref={lastNameRef}
                                     type="text"
                                     name="last-name"
                                     id="last-name"
                                     autoComplete="family-name"
                                     className={inputClass}
+                                    defaultValue={config.lastName}
                                 />
                             </div>
                         </div>
@@ -154,11 +196,13 @@ export default function Options() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    ref={firstNameRef}
                                     type="text"
                                     name="first-name"
                                     id="first-name"
                                     autoComplete="given-name"
                                     className={inputClass}
+                                    defaultValue={config.firstName}
                                 />
                             </div>
                         </div>
@@ -168,7 +212,14 @@ export default function Options() {
                                 手机号
                             </label>
                             <div className="mt-2">
-                                <input type="tel" name="mobile-number" id="mobile-number" className={inputClass} />
+                                <input
+                                    type="tel"
+                                    ref={mobileRef}
+                                    name="mobile-number"
+                                    id="mobile-number"
+                                    className={inputClass}
+                                    defaultValue={config.mobile}
+                                />
                             </div>
                         </div>
 
@@ -177,7 +228,14 @@ export default function Options() {
                                 身份后四位
                             </label>
                             <div className="mt-2">
-                                <input type="text" name="last-code" id="last-code" className={inputClass} />
+                                <input
+                                    type="text"
+                                    ref={last4codeRef}
+                                    name="last-code"
+                                    id="last-code"
+                                    className={inputClass}
+                                    defaultValue={config.last4code}
+                                />
                             </div>
                         </div>
 
@@ -187,11 +245,13 @@ export default function Options() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    ref={appleidRef}
                                     id="email"
                                     name="email"
                                     type="email"
                                     autoComplete="email"
                                     className={inputClass}
+                                    defaultValue={config.appleId}
                                 />
                             </div>
                         </div>
@@ -202,11 +262,13 @@ export default function Options() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    ref={passwordRef}
                                     id="password"
                                     name="password"
                                     type="password"
                                     autoComplete="password"
                                     className={inputClass}
+                                    defaultValue={config.password}
                                 />
                             </div>
                         </div>
@@ -219,6 +281,7 @@ export default function Options() {
                                 <DropListBox
                                     itemList={billItemList}
                                     domID={'pay-type'}
+                                    selectedIndex={billSelected}
                                     callback={handleSelectPayType}
                                 />
                             </div>
@@ -239,7 +302,8 @@ export default function Options() {
                             </label>
                             <div className="mt-2">
                                 <DropListBox
-                                    itemList={province}
+                                    itemList={provinceList}
+                                    selectedIndex={selectedProviceIndex}
                                     domID={'province-list'}
                                     callback={handleSelectProvince}
                                 />
@@ -264,79 +328,6 @@ export default function Options() {
                                     itemList={districtList}
                                     domID={'district-list'}
                                     callback={handleSelectDistrict}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label htmlFor="country" className={labelClass}>
-                                Country
-                            </label>
-                            <div className="mt-2">
-                                <select id="country" name="country" autoComplete="country-name" className={inputClass}>
-                                    <option>United States</option>
-                                    <option>Canada</option>
-                                    <option>Mexico</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="col-span-full">
-                            <label htmlFor="street-address" className={labelClass}>
-                                Street address
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="street-address"
-                                    id="street-address"
-                                    autoComplete="street-address"
-                                    className={inputClass}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-2 sm:col-start-1">
-                            <label htmlFor="city" className={labelClass}>
-                                City
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="city"
-                                    id="city"
-                                    autoComplete="address-level2"
-                                    className={inputClass}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-2">
-                            <label htmlFor="region" className={labelClass}>
-                                State / Province
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="region"
-                                    id="region"
-                                    autoComplete="address-level1"
-                                    className={inputClass}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-2">
-                            <label htmlFor="postal-code" className={labelClass}>
-                                ZIP / Postal code
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    type="text"
-                                    name="postal-code"
-                                    id="postal-code"
-                                    autoComplete="postal-code"
-                                    className={inputClass}
                                 />
                             </div>
                         </div>
@@ -468,4 +459,10 @@ export default function Options() {
             </div>
         </main>
     )
+}
+
+const saveAsync = async (config: IPHONEORDER_CONFIG) => {
+    await saveToStorage(config, storeKeys.orderConfig)
+    await sleep(1)
+    // window.close()
 }
