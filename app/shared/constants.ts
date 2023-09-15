@@ -1,3 +1,5 @@
+import { mapValues as _mapValues } from 'lodash'
+import { IPHONEORDER_CONFIG } from './interface'
 export const iPhoneModels = {
     iPhone15Pro: [
         { color: { value: 'black', text: '黑色钛金属' }, capacity: '128GB', model: 'MTQ43CH/A' },
@@ -108,3 +110,65 @@ export enum BILL_OPTIONS_TYPE {
     icbc = `工商银行`,
     huabei = `花呗`,
 }
+
+export const billTypeKeys = _mapValues(BILL_OPTIONS_TYPE, (v, k) => {
+    return k
+})
+export const billItemList = [
+    {
+        id: billTypeKeys.alipay,
+        name: BILL_OPTIONS_TYPE.alipay,
+    },
+    {
+        id: billTypeKeys.wechat,
+        name: BILL_OPTIONS_TYPE.wechat,
+    },
+    {
+        id: billTypeKeys.ccb,
+        name: BILL_OPTIONS_TYPE.ccb,
+    },
+    {
+        id: billTypeKeys.cmb,
+        name: BILL_OPTIONS_TYPE.cmb,
+    },
+    {
+        id: billTypeKeys.icbc,
+        name: BILL_OPTIONS_TYPE.icbc,
+    },
+    {
+        id: billTypeKeys.huabei,
+        name: BILL_OPTIONS_TYPE.huabei,
+    },
+]
+
+export const defaultiPhoneOrderConfig: IPHONEORDER_CONFIG = {
+    stepWait: 1000,
+    payBill: billTypeKeys.alipay,
+}
+
+export const defaultPayinstallmentTotal = [
+    {
+        id: 0,
+        name: '不分期',
+    },
+    {
+        id: 3,
+        name: '3期',
+        includes: [billTypeKeys.ccb, billTypeKeys.cmb, billTypeKeys.huabei, billTypeKeys.icbc],
+    },
+    {
+        id: 6,
+        name: '6期',
+        includes: [billTypeKeys.ccb, billTypeKeys.cmb, billTypeKeys.huabei, billTypeKeys.icbc],
+    },
+    {
+        id: 12,
+        name: '12期',
+        includes: [billTypeKeys.ccb, billTypeKeys.cmb, billTypeKeys.huabei, billTypeKeys.icbc],
+    },
+    {
+        id: 24,
+        name: '24期',
+        includes: [billTypeKeys.ccb, billTypeKeys.cmb, billTypeKeys.icbc],
+    },
+]

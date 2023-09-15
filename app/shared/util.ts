@@ -40,6 +40,7 @@ export const saveToStorage = async <T extends TValue>(tValue: T, storeName: stri
     console.log(`save to store`, tValue)
     const storedValue = (await restoreFromStorage()) as Record<string, any>
     const storeValue = { ...storedValue, [storeName]: tValue }
+    console.log(`storeValue`, storeValue)
     // @ts-ignore
     chrome.storage.sync.set(storeValue)
 }
@@ -58,8 +59,13 @@ export const restoreFromStorage = async <T extends TValue>(storeName?: string): 
             if (!storeName) {
                 resolve({ ...items })
             } else {
-                const value = items?.[storeName] || {}
-                resolve(value)
+                const value = items?.[storeName]
+                // incase value is false
+                if (value === undefined) {
+                    resolve({} as T)
+                } else {
+                    resolve(value)
+                }
             }
         })
     }).catch(e => {
