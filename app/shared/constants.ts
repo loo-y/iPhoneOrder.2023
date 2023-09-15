@@ -51,6 +51,8 @@ export const applePageUrl = {
     buyiPhone: `https://www.apple.com.cn/shop/buy-iphone`,
 }
 
+export const Match_URL = `apple.com.cn`
+
 // ********** 👇page Element👇 **********
 const prefixCheckout = `checkout`
 const prefixPickupContact = `${prefixCheckout}.pickupContact`
