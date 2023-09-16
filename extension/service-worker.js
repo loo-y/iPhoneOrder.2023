@@ -4,14 +4,15 @@ const mainPage = './dist/main.html'
 const optionsPage = './dist/options.html'
 
 chrome.action.onClicked.addListener(async tab => {
+    console.log(`chrome action onClicked`)
     if (!tab.url) return
     const url = new URL(tab.url)
     const tabId = tab.id
     const isInMatchUrl = Match_URL.some(function (matchurl) {
         return url.origin.includes(matchurl)
     })
-    const merge_request_iid = url.pathname?.match(/merge_requests\/(\d+)/)?.[1]
-    if (isInMatchUrl && merge_request_iid) {
+
+    if (isInMatchUrl) {
         // inject script in page first
         chrome.scripting.executeScript(
             {
@@ -25,7 +26,7 @@ chrome.action.onClicked.addListener(async tab => {
                 chrome.scripting.executeScript({
                     target: { tabId },
                     world: 'MAIN',
-                    args: [{ command, merge_request_iid, tabUrl: url.href }],
+                    args: [{ command, tabUrl: url.href }],
                     func: (...args) => {
                         injectScript(...args)
                     },
