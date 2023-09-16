@@ -18,7 +18,8 @@ interface IGetStoreCanPickInfoProps {
 const getStoreCanPickInfo = async ({ partNumber, isNoWait, iPhoneOrderConfig }: IGetStoreCanPickInfoProps) => {
     let pickupStoreInfo: Record<string, any> = {}
     const { host, protocol } = window.location || {}
-    let url = `${protocol}//www.apple.com.cn/shop/fulfillment-messages`
+    // let url = `${protocol}//www.apple.com.cn/shop/fulfillment-messages`
+    let url = `/shop/fulfillment-messages`
 
     const districtName = iPhoneOrderConfig.districtName || defaultAres.districtName
     const provinceName = iPhoneOrderConfig.provinceName || defaultAres.provinceName
@@ -46,19 +47,22 @@ const getStoreCanPickInfo = async ({ partNumber, isNoWait, iPhoneOrderConfig }: 
             ...commonHeaders,
             referer: applePageUrl.buyiPhone,
         },
+        credentials: 'include' as RequestCredentials,
     }
 
     try {
-        let resJson = (await fetch(url, options)) as Record<string, any>
+        let resResult = (await fetch(url, options)) as Record<string, any>
 
-        const { pickupMessage } = resJson?.body?.content || {}
+        let pickupMessage: any = {}
+
         // 如果请求失败， 表示被封禁
-        if (![200, 301, 302].includes(Number(resJson?.head?.status))) {
+        if (![200, 301, 302].includes(Number(resResult?.status))) {
             if (!isNoWait) {
                 console.log(`********** GMfetch failed, stepWait add 1 sec **********`)
-                console.log(`resJson`, resJson)
+                const resText = await resResult.text()
+                console.log(`resText`, resText)
                 iPhoneOrderConfig.stepWait = iPhoneOrderConfig.stepWait + 1
-                if (String(resJson)?.indexOf(`503 Service Temporarily Unavailable`) > -1) {
+                if (resText?.indexOf(`503 Service Temporarily Unavailable`) > -1) {
                     console.log(`********** and wait 1 min **********`)
                     // 换一个型号调用，让apple认为是正常请求
                     const iPhoneProAll = iPhoneModels.iPhone15Pro
@@ -74,6 +78,10 @@ const getStoreCanPickInfo = async ({ partNumber, isNoWait, iPhoneOrderConfig }: 
             } else {
                 console.log(`********** GMfetch failed, NoWait failed **********`)
             }
+        } else {
+            const resJson = await resResult.json()
+            console.log(`resJson`, resJson)
+            pickupMessage = resJson?.body?.content?.pickupMessage || {}
         }
 
         let partPickupStores = pickupMessage?.stores || [],

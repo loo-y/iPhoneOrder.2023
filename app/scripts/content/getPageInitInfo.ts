@@ -1,5 +1,7 @@
 import crossfetch from 'cross-fetch'
 import { applePageUrl } from '@/app/shared/constants'
+import { commonHeaders } from '@/app/shared/constants'
+
 // fix TypeError: Failed to execute 'fetch' on 'Window': Illegal invocation
 const fetch = crossfetch.bind(this)
 
@@ -23,7 +25,12 @@ const getPageInitInfo = async () => {
     if (!partNumber) {
         let shopBagResText = ''
         try {
-            const shopBagRes = await fetch(applePageUrl.shoppingCart)
+            let headers: any = { ...commonHeaders }
+            delete headers.referer
+            const shopBagRes = await fetch(applePageUrl.shoppingCartWithoutHost, {
+                headers: headers,
+                credentials: 'include',
+            })
             shopBagResText = await shopBagRes.text()
         } catch (e) {
             console.log(`fetch error`, e)

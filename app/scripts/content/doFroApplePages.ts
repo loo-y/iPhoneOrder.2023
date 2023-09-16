@@ -100,7 +100,7 @@ const doFroApplePages = async (url?: string) => {
 
             let pageInfo = await getPageInitInfo()
             const { partNumber, x_aos_stk } = pageInfo || {}
-
+            console.log(`partNumber, x_aos_stk`, partNumber, x_aos_stk)
             if (!partNumber || !x_aos_stk) {
                 // 当前页面没有信息， 则刷新一下
                 await sleep(iPhoneOrderConfig.stepWait, 'wait and reload')

@@ -51,6 +51,8 @@ export enum storeKeys {
 export const applePageUrl = {
     shoppingCart: `https://www.apple.com.cn/shop/bag`,
     buyiPhone: `https://www.apple.com.cn/shop/buy-iphone`,
+    shoppingCartWithoutHost: `/shop/bag`,
+    buyiPhoneWithoutHost: `/shop/buy-iphone`,
 }
 
 export const Match_URL = `apple.com.cn`
@@ -188,6 +190,7 @@ export const commonHeaders = {
     'sec-fetch-site': 'same-origin',
     // "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
     referer: applePageUrl.buyiPhone,
+    // cookie: document.cookie,
 }
 
 export const fetchHeaders = {
