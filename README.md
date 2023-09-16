@@ -7,6 +7,8 @@
 
 <b>********** 该插件仅用于学习和交流 **********</b>
 
+------
+
 ### 安装和使用
 1. 点击下载安装 [Release](https://github.com/loo-y/iPhoneOrder.2023/releases/)
 
@@ -38,7 +40,9 @@
 11. 打开 苹果官网，将想要的 iPhone 预先放入购物车，点击开启，并确认
    <br/><img src='./public/assets/images/SCR-20230916-nfkt.png' width="800px" />
 
+<br/>
 
+------
 
 ### 注意
 插件将会自动刷新抢购，请保持电脑不要自动休眠。
