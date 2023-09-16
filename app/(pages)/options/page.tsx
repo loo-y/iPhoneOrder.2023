@@ -514,5 +514,5 @@ export default function Options() {
 const saveAsync = async (config: IPHONEORDER_CONFIG) => {
     await saveToStorage(config, storeKeys.orderConfig)
     await sleep(1)
-    // window.close()
+    window.close()
 }

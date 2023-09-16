@@ -1,28 +1,54 @@
 'use client'
 import { restoreFromStorage, saveToStorage } from '@/app/shared/util'
-import { storeKeys } from '@/app/shared/constants'
+import { defaultiPhoneOrderConfig, storeKeys } from '@/app/shared/constants'
 import { useEffect, useState } from 'react'
 import { Match_URL } from '@/app/shared/constants'
+import { IPHONEORDER_CONFIG } from '@/app/shared/interface'
 
 const Popup = () => {
     const [orderEnabled, setOrderEnable] = useState<boolean>(false)
-
+    const [config, setConfig] = useState<IPHONEORDER_CONFIG>(defaultiPhoneOrderConfig)
     // 异步获取enable状态
     useEffect(() => {
         const getOrderEnable = async () => {
             const isEnabled = await restoreFromStorage(storeKeys.orderEnabled)
+            const config = await restoreFromStorage(storeKeys.orderConfig)
             setOrderEnable(!!isEnabled)
+            setConfig(config as IPHONEORDER_CONFIG)
         }
         getOrderEnable()
     }, [])
 
+    const handleOptionClick = () => {
+        if (typeof chrome !== 'undefined' && chrome?.runtime) {
+            chrome.runtime.openOptionsPage()
+        } else {
+            console.log(`please open in chrome`)
+        }
+    }
     const handleConfirm = () => {
-        confirmAsync(orderEnabled)
+        if (
+            !orderEnabled ||
+            (config?.lastName &&
+                config?.mobile &&
+                config?.firstName &&
+                config?.appleId &&
+                config?.last4code &&
+                config?.cityName &&
+                config?.districtName &&
+                config?.provinceName)
+        ) {
+            confirmAsync(orderEnabled)
+        } else {
+            setOrderEnable(false)
+            alert(`请先配置必要信息`)
+        }
     }
     return (
-        <div className="mx-auto my-2 w-[22rem] h-[17rem]">
+        <div className="mx-auto my-2 w-[18rem] h-[10rem]">
             <main className="flex w-fit flex-col items-center gap-8 justify-between py-3 px-2 mx-auto mb-2 mt-5">
-                <div className="flex flex-col gap-3  justify-between mb-2">
+                <div className="flex flex-row gap-3 h-10 justify-between mb-2 px-4 py-6 rounded-xl bg-slate-100">
+                    <div className="flex text-gray-600 items-center text-base font-bold">开启自动抢购</div>
                     <SelectItem
                         enabled={orderEnabled}
                         index={0}
@@ -31,15 +57,21 @@ const Popup = () => {
                         }}
                     />
                 </div>
-                <div className="w-full flex flex-col justify-center text-center items-center gap-3">
-                    <div
-                        className={`flex w-full h-10 ${'bg-lime-600 cursor-pointer'} bg-opacity-90 rounded-lg my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md`}
-                        onClick={handleConfirm}
-                    >
-                        确认
-                    </div>
-                </div>
             </main>
+            <div className="w-full flex flex-row justify-center text-center items-center gap-5 text-sm">
+                <div
+                    className={`flex w-1/3 h-9 bg-white text-indigo-500 cursor-pointer bg-opacity-90 border-4 border-t-2 border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:border-t-[3px] hover:border-b-[3px]`}
+                    onClick={handleOptionClick}
+                >
+                    配置
+                </div>
+                <div
+                    className={`flex w-1/3 h-9 ${'bg-indigo-600 cursor-pointer'} bg-opacity-90 border border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:bg-indigo-500`}
+                    onClick={handleConfirm}
+                >
+                    确认
+                </div>
+            </div>
         </div>
     )
 }
@@ -58,21 +90,21 @@ const SelectItem = ({ enabled, callback }: ISelectItemProps) => {
         })
     }
     return (
-        <div className="flex h-14 flex-row gap-6">
-            <div className="w-20 flex-col justify-end items-end gap-1.5 inline-flex">
+        <div className="flex flex-row gap-6">
+            <div className="w-20 flex-col justify-center items-end gap-1.5 inline-flex">
                 {enabled ? (
                     <div
-                        className="w-14 h-7 bg-lime-600 bg-opacity-70 rounded-2xl  py-0.5 px-[0.2rem] flex relative cursor-pointer ease-linear duration-500 shadow-lime-500/50 shadow-md"
+                        className="w-14 h-7 bg-indigo-600  bg-opacity-70 rounded-2xl  py-0.5 px-[0.2rem] flex relative cursor-pointer ease-linear duration-500 shadow-indigo-500/50 shadow-md"
                         onClick={handleToggle}
                     >
-                        <div className="w-6 h-6 bg-gray-100 rounded-full pt-1 pb-1.5 px-1 ease-linear duration-300 ml-[1.65rem]"></div>
+                        <div className="w-6 h-6 bg-gray-100 rounded-full pt-1 pb-2 px-1 ease-linear duration-300 ml-[1.65rem]"></div>
                     </div>
                 ) : (
                     <div
                         className="w-14 h-7 bg-slate-400 bg-opacity-50 rounded-2xl py-0.5 px-[0.2rem] flex relative cursor-pointer ease-linear duration-500 shadow-slate-500/50 shadow-md"
                         onClick={handleToggle}
                     >
-                        <div className="w-6 h-6 bg-gray-100 rounded-full pt-1 pb-1.5  px-1 ease-linear duration-300 ml-0"></div>
+                        <div className="w-6 h-6 bg-gray-100 rounded-full pt-1 pb-2  px-1 ease-linear duration-300 ml-0"></div>
                     </div>
                 )}
             </div>
