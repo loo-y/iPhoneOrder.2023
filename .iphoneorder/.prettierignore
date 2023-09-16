@@ -1,6 +1,0 @@
-# Ignore artifacts:
-build
-dist
-publish
-
-tsconfig.json
