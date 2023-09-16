@@ -19,10 +19,12 @@ const defaultItem = { id: '', name: '' }
 export default function Options() {
     const [config, setConfig] = useState<IPHONEORDER_CONFIG>(defaultiPhoneOrderConfig)
     const [payinstallmentList, setpayinstallmentList] = useState([defaultItem])
-    const [provinceList, setProvinceList] = useState([defaultItem])
-    const [selectedProviceIndex, setSelectedProviceIndex] = useState(0)
+    const [provinceList, setProvinceList] = useState(province)
+    const [selectedProvinceIndex, setSelectedProvinceIndex] = useState(0)
     const [cityList, setCityList] = useState([defaultItem])
+    const [selectedCityIndex, setSelectedCityIndex] = useState(0)
     const [districtList, setDistrictList] = useState([defaultItem])
+    const [selectedDistrictIndex, setSelectedDistrictIndex] = useState(0)
     const firstNameRef = useRef<HTMLInputElement>(null)
     const lastNameRef = useRef<HTMLInputElement>(null)
     const last4codeRef = useRef<HTMLInputElement>(null)
@@ -44,6 +46,7 @@ export default function Options() {
         })
     }, [])
 
+    // ************ 更新选中支付方式 ************
     const billSelected = useMemo(() => {
         return (
             (config?.payBill &&
@@ -53,6 +56,17 @@ export default function Options() {
             0
         )
     }, [config.payBill])
+
+    // ************ 更新选中分期笔数 ************
+    const payinstallmentSelected = useMemo(() => {
+        return (
+            (config?.payInstallment &&
+                _findIndex(payinstallmentList, _b => {
+                    return _b.id == String(config.payInstallment)
+                })) ||
+            0
+        )
+    }, [config.payInstallment])
 
     // ************ 👇下拉菜单联动👇 ************
     useEffect(() => {
@@ -73,6 +87,17 @@ export default function Options() {
         )
 
         setpayinstallmentList(newPayinstallmentList)
+        // 当原来的分期笔数不存在时
+        if (
+            !_find(newPayinstallmentList, _t => {
+                return _t.id == config.payInstallment
+            })
+        ) {
+            setConfig({
+                ...config,
+                payInstallment: Number(newPayinstallmentList[0].id) || 0,
+            })
+        }
     }, [config.payBill])
 
     useEffect(() => {
@@ -82,34 +107,66 @@ export default function Options() {
             })
             provinceIndex = provinceIndex > -1 ? provinceIndex : 0
 
-            setSelectedProviceIndex(provinceIndex)
+            setSelectedProvinceIndex(provinceIndex)
             const provinceId = province[provinceIndex].id
             // @ts-ignore
             const newCityList = city[provinceId]
             setCityList(newCityList)
-
-            if (provinceList.length < 1) {
-                setProvinceList(province)
+            if (
+                !_find(newCityList, _t => {
+                    return _t.name == config.cityName
+                })
+            ) {
+                setConfig({
+                    ...config,
+                    cityName: newCityList[0].name,
+                })
             }
+            // if (provinceList.length < 1) {
+            //     setProvinceList(province)
+            // }
         }
     }, [config.provinceName])
 
     useEffect(() => {
         if (config.cityName) {
-            const cityId: string =
-                _find(cityList, item => {
-                    return item.name == config.cityName
-                })?.id || ''
-            if (cityId) {
-                // @ts-ignore
-                const newDistrictList = county[cityId]
+            let cityIndex: number = _findIndex(cityList, item => {
+                return item.name == config.cityName
+            })
+            cityIndex = cityIndex > -1 ? cityIndex : 0
+            setSelectedCityIndex(cityIndex)
+            const cityId: string = cityList[cityIndex].id
+            // @ts-ignore
+            const newDistrictList = county[cityId]
+            // @ts-ignore
+            console.log(`cityIndex`, cityIndex, cityList[cityIndex], county[cityId])
+            if (newDistrictList) {
                 setDistrictList(newDistrictList)
+                if (
+                    !_find(newDistrictList, _t => {
+                        return _t.name == config.districtName
+                    })
+                ) {
+                    setConfig({
+                        ...config,
+                        districtName: newDistrictList[0].name,
+                    })
+                }
             }
         }
-    }, [config.cityName])
+    }, [config.cityName, cityList])
 
+    useEffect(() => {
+        // setSelectedDistrictIndex
+        let districtIndex: number = _findIndex(districtList, item => {
+            return item.name == config.districtName
+        })
+        districtIndex = districtIndex > -1 ? districtIndex : 0
+        setSelectedDistrictIndex(districtIndex)
+    }, [config.districtName, districtList])
     // ************ 👆下拉菜单联动👆 ************
 
+    // ************ 支付方式 ************
     const handleSelectPayType = (payItem: Record<string, any>) => {
         setConfig(prev => {
             return {
@@ -119,29 +176,41 @@ export default function Options() {
         })
     }
 
-    const handleSelectProvince = (payItem: Record<string, any>) => {
+    // ************ 分期笔数 ************
+    const handleSelectPayinstallment = (payinstallmentItem: Record<string, any>) => {
         setConfig(prev => {
             return {
                 ...prev,
-                provinceName: payItem.name,
+                payInstallment: payinstallmentItem.id,
             }
         })
     }
 
-    const handleSelectCity = (payItem: Record<string, any>) => {
+    // ************ 选中省份 ************
+    const handleSelectProvince = (provinceItem: Record<string, any>) => {
         setConfig(prev => {
             return {
                 ...prev,
-                cityName: payItem.name,
+                provinceName: provinceItem.name,
+            }
+        })
+    }
+    // ************ 选中城市 ************
+    const handleSelectCity = (cityItem: Record<string, any>) => {
+        setConfig(prev => {
+            return {
+                ...prev,
+                cityName: cityItem.name,
             }
         })
     }
 
-    const handleSelectDistrict = (payItem: Record<string, any>) => {
+    // ************ 选中区域 ************
+    const handleSelectDistrict = (districtItem: Record<string, any>) => {
         setConfig(prev => {
             return {
                 ...prev,
-                districtName: payItem.name,
+                districtName: districtItem.name,
             }
         })
     }
@@ -292,7 +361,12 @@ export default function Options() {
                                 分期笔数
                             </label>
                             <div className="mt-2">
-                                <DropListBox itemList={payinstallmentList} domID={'pay-installment'} />
+                                <DropListBox
+                                    itemList={payinstallmentList}
+                                    domID={'pay-installment'}
+                                    selectedIndex={payinstallmentSelected}
+                                    callback={handleSelectPayinstallment}
+                                />
                             </div>
                         </div>
 
@@ -303,7 +377,7 @@ export default function Options() {
                             <div className="mt-2">
                                 <DropListBox
                                     itemList={provinceList}
-                                    selectedIndex={selectedProviceIndex}
+                                    selectedIndex={selectedProvinceIndex}
                                     domID={'province-list'}
                                     callback={handleSelectProvince}
                                 />
@@ -315,7 +389,12 @@ export default function Options() {
                                 城市
                             </label>
                             <div className="mt-2">
-                                <DropListBox itemList={cityList} domID={'city-list'} callback={handleSelectCity} />
+                                <DropListBox
+                                    itemList={cityList}
+                                    domID={'city-list'}
+                                    callback={handleSelectCity}
+                                    selectedIndex={selectedCityIndex}
+                                />
                             </div>
                         </div>
 
@@ -326,6 +405,7 @@ export default function Options() {
                             <div className="mt-2">
                                 <DropListBox
                                     itemList={districtList}
+                                    selectedIndex={selectedDistrictIndex}
                                     domID={'district-list'}
                                     callback={handleSelectDistrict}
                                 />

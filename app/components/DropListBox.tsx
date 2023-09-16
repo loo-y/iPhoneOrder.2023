@@ -2,6 +2,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { find as _find } from 'lodash'
 
 type DropItem = {
     id: number | string
@@ -36,14 +37,40 @@ export default function DropListBox({ domID, title, itemList, selectedIndex, cal
     //     if (callback) callback(newItem)
     // }, [itemList, selectedIndex])
 
+    // useEffect(() => {
+    //     console.log(`selectedIndex`, selectedIndex)
+    //     // 当之前的selected对象在新的itemList中存在时，不做处理
+    //     if(!_find(itemList, _item=>{
+    //         return _item.id == selected.id && _item.name == selected.name
+    //     })){
+    //         let newItem: DropItem
+    //         if (selectedIndex !== undefined && itemList[selectedIndex]) {
+    //             newItem = itemList[selectedIndex]
+    //         }else{
+    //             newItem = itemList[0]
+    //         }
+    //         setSelected(newItem)
+    //         if (callback) callback(newItem)
+    //     }
+    // }, [itemList])
+
     useEffect(() => {
-        let newItem: DropItem
-        if (selectedIndex !== undefined) {
-            newItem = itemList[selectedIndex]
-            setSelected(newItem)
-            if (callback) callback(newItem)
+        if (selectedIndex && itemList[selectedIndex]) {
+            setSelected(itemList[selectedIndex])
         }
     }, [selectedIndex])
+
+    useEffect(() => {
+        // 表示itemList已经变更
+        if (
+            !_find(itemList, _item => {
+                return _item.id == selected.id && _item.name == selected.name
+            })
+        ) {
+            let newItem: DropItem = (selectedIndex !== undefined ? itemList[selectedIndex] : itemList[0]) || itemList[0]
+            setSelected(newItem)
+        }
+    }, [itemList])
 
     return (
         <Listbox value={selected} onChange={handleSelect}>

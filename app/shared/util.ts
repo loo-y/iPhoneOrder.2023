@@ -33,7 +33,7 @@ type TValue = string | Record<string, any> | Array<any> | null | number | boolea
 export const saveToStorage = async <T extends TValue>(tValue: T, storeName: string): Promise<void> => {
     let msg = ''
     // @ts-ignore
-    if (typeof chrome === 'undefined') {
+    if (typeof chrome === 'undefined' || !chrome.storage) {
         msg = 'Please use as chrome extension'
         return
     }
@@ -47,7 +47,7 @@ export const saveToStorage = async <T extends TValue>(tValue: T, storeName: stri
 export const restoreFromStorage = async <T extends TValue>(storeName?: string): Promise<T> => {
     let msg = ''
     // @ts-ignore
-    if (typeof chrome === 'undefined') {
+    if (typeof chrome === 'undefined' || !chrome.storage) {
         msg = 'Please use as chrome extension'
         console.log(`msg`, msg, typeof chrome)
         return null as T
@@ -55,7 +55,7 @@ export const restoreFromStorage = async <T extends TValue>(storeName?: string): 
 
     return new Promise<T>((resolve, reject) => {
         // @ts-ignore
-        chrome.storage.sync.get(null, (items: any) => {
+        chrome.storage?.sync.get(null, (items: any) => {
             if (!storeName) {
                 resolve({ ...items })
             } else {
