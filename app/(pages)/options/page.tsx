@@ -31,6 +31,7 @@ export default function Options() {
     const mobileRef = useRef<HTMLInputElement>(null)
     const appleidRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
+    const stepWaitRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         restoreFromStorage(storeKeys.orderConfig).then(data => {
@@ -216,7 +217,6 @@ export default function Options() {
     }
 
     const handleSave = useCallback(() => {
-        console.log(config)
         const saveConfig: IPHONEORDER_CONFIG = {
             ...config,
             firstName: firstNameRef.current?.value,
@@ -225,7 +225,9 @@ export default function Options() {
             mobile: mobileRef.current?.value,
             appleId: appleidRef.current?.value,
             password: passwordRef.current?.value,
+            stepWait: Number(stepWaitRef.current?.value) || config.stepWait || 10,
         }
+        console.log(saveConfig)
         saveAsync(saveConfig)
     }, [config])
 
@@ -415,6 +417,30 @@ export default function Options() {
                 </div>
 
                 <div className="border-b border-gray-900/10 pb-12">
+                    <h2 className="text-base font-semibold leading-7 text-gray-900">系统设置</h2>
+                    <p className="mt-1 text-sm leading-6 text-gray-600"></p>
+                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-3">
+                            <label htmlFor="step-wait" className={labelClass}>
+                                StepWait (步频等待秒数。默认10秒，不建议设置过短，会封IP)
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    ref={stepWaitRef}
+                                    id={'step-wait'}
+                                    min={1}
+                                    max={20}
+                                    step={0.5}
+                                    type="number"
+                                    defaultValue={config.stepWait}
+                                    className={inputClass}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* <div className="border-b border-gray-900/10 pb-12">
                     <h2 className="text-base font-semibold leading-7 text-gray-900">Notifications</h2>
                     <p className="mt-1 text-sm leading-6 text-gray-600"></p>
 
@@ -440,42 +466,7 @@ export default function Options() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="relative flex gap-x-3">
-                                    <div className="flex h-6 items-center">
-                                        <input
-                                            id="candidates"
-                                            name="candidates"
-                                            type="checkbox"
-                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        />
-                                    </div>
-                                    <div className="text-sm leading-6">
-                                        <label htmlFor="candidates" className="font-medium text-gray-900">
-                                            Candidates
-                                        </label>
-                                        <p className="text-gray-500">
-                                            Get notified when a candidate applies for a job.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="relative flex gap-x-3">
-                                    <div className="flex h-6 items-center">
-                                        <input
-                                            id="offers"
-                                            name="offers"
-                                            type="checkbox"
-                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                        />
-                                    </div>
-                                    <div className="text-sm leading-6">
-                                        <label htmlFor="offers" className="font-medium text-gray-900">
-                                            Offers
-                                        </label>
-                                        <p className="text-gray-500">
-                                            Get notified when a candidate accepts or rejects an offer.
-                                        </p>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </fieldset>
                         <fieldset>
@@ -497,32 +488,11 @@ export default function Options() {
                                         Everything
                                     </label>
                                 </div>
-                                <div className="flex items-center gap-x-3">
-                                    <input
-                                        id="push-email"
-                                        name="push-notifications"
-                                        type="radio"
-                                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                    />
-                                    <label htmlFor="push-email" className={labelClass}>
-                                        Same as email
-                                    </label>
-                                </div>
-                                <div className="flex items-center gap-x-3">
-                                    <input
-                                        id="push-nothing"
-                                        name="push-notifications"
-                                        type="radio"
-                                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                                    />
-                                    <label htmlFor="push-nothing" className={labelClass}>
-                                        No push notifications
-                                    </label>
-                                </div>
+                                
                             </div>
                         </fieldset>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className="mt-6 flex items-center justify-end gap-x-6">

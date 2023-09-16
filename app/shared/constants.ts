@@ -145,7 +145,7 @@ export const billItemList = [
 ]
 
 export const defaultiPhoneOrderConfig: IPHONEORDER_CONFIG = {
-    stepWait: 1000,
+    stepWait: 10,
     // @ts-ignore
     payBill: billTypeKeys.alipay,
 }
