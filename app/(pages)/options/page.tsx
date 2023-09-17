@@ -67,7 +67,7 @@ export default function Options() {
                 })) ||
             0
         )
-    }, [config.payInstallment])
+    }, [config.payInstallment, payinstallmentList])
 
     // ************ 👇下拉菜单联动👇 ************
     useEffect(() => {
