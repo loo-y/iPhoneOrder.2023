@@ -67,7 +67,7 @@ const prefixAddressCheckout = `${prefixSelfContact}.address`
 const prefixNationalIdSelf = `${prefixSelfPickupContact}.nationalIdSelf`
 
 const prefixBill = `${prefixCheckout}.billing`
-const prefixBillingoptions = `${prefixBill}.billingoptions`
+export const prefixBillingoptions = `${prefixBill}.billingoptions`
 
 export const pageElementsId = {
     shoppingCart: {
@@ -97,6 +97,10 @@ export const pageElementsId = {
         bill: {
             alipay: `${prefixBillingoptions}.alipay`,
             wechat: `${prefixBillingoptions}.wechat`,
+            huabei: `${prefixBillingoptions}.installments0001243254`,
+            cmb: `${prefixBillingoptions}.installments0001321713`,
+            ccb: `${prefixBillingoptions}.installments0000882476`,
+            icbc: `${prefixBillingoptions}.installments0000833448`,
         },
     },
 }

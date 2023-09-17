@@ -1,5 +1,5 @@
 import { sleep, changeInputValue, getElemByID } from '@/app/shared/util'
-import { applePageUrl, pageElementsId, storeKeys } from '@/app/shared/constants'
+import { applePageUrl, pageElementsId, storeKeys, prefixBillingoptions } from '@/app/shared/constants'
 import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
 import getPageInitInfo from './getPageInitInfo'
 import goOrderSteps from './goOrderSteps'
@@ -145,14 +145,26 @@ const doFroApplePages = async (url?: string) => {
 
         // 选择付款方式页面
         if (s_value.includes('billing')) {
+            const { payBill, payInstallment } = iPhoneOrderConfig || {}
             let alipayBtnInput = getElemByID(checkoutElems.bill.alipay)
-            let wechatpayBtnInput = getElemByID(checkoutElems.bill.wechat)
-            if (alipayBtnInput) {
+            let payBillBtnInput = getElemByID(checkoutElems.bill[payBill])
+            if (payBillBtnInput) {
+                payBillBtnInput.click()
+
+                if (!['wechat', 'alipay'].includes(payBill)) {
+                    // 有分期需求
+                    await sleep(1.5)
+                    const dataAutom = `${payBillBtnInput.id}-${payInstallment}`.replace(`${prefixBillingoptions}.`, '')
+                    const payInstallmentBtnInput = document.querySelector(`input[data-autom="${dataAutom}"]`)
+                    console.log(`payInstallmentBtnInput`, payInstallmentBtnInput, `input[data-autom="${dataAutom}"]`)
+
+                    ;(payInstallmentBtnInput as HTMLInputElement)?.click()
+                }
+            } else if (alipayBtnInput) {
+                // 获取不到就走默认的支付宝
                 alipayBtnInput.click()
-            } else if (wechatpayBtnInput) {
-                wechatpayBtnInput.click()
             } else if (url) {
-                // 如果既没有支付宝，又没有微信，说明页面加载没好，直接刷新
+                // 如果没有支付宝，说明页面加载没好，直接刷新
                 location.href = url
                 return
             }

@@ -1,1 +1,1 @@
-(function(b){var d=b.pushState;b.pushState=function(f,g,c){if(typeof b.onpushstate=="function")b.onpushstate({state:f});return c=c&&c.search(/^http/)>-1?c:"",window.postMessage({action:"doFroApplePages",url:c},"*"),d.apply(b,arguments)},console.log(b.pushState)})(history);
+(function(c){var d=c.pushState;c.pushState=function(f,j,b){if(typeof c.onpushstate=="function")c.onpushstate({state:f});return b=b&&b.search(/^http/)>-1?b:"",window.postMessage({action:"doFroApplePages",url:b},"*"),d.apply(c,arguments)},console.log(c.pushState)})(history);
