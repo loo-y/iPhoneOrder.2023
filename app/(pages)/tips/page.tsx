@@ -14,8 +14,7 @@ const Tips = () => {
         })
     }, [])
 
-    // if(!fetchCount) return <div></div>
-    // flex w-52 h-fit flex-col  text-gray-700 items-center gap-1 px-2  justify-between py-2 mx-auto rounded-xl bg-slate-100 hover:bg-slate-200 text-base font-bold cursor-move shadow-orange-200  shadow-md
+    if (!fetchCount) return <div></div>
     return (
         <main className="flex w-52 h-fit flex-col  text-gray-700 items-center gap-1 px-2  justify-between py-2 mx-auto rounded-lg bg-slate-100 text-base font-bold cursor-pointer shadow-slate-500/50  shadow-lg">
             <div className="flex flex-row gap-0 h-8 items-center justify-center py-2 ">
