@@ -15,38 +15,52 @@ interface IGoOrderSteps {
 const goOrderSteps = async ({ partNumber, x_aos_stk, count, iPhoneOrderConfig }: IGoOrderSteps) => {
     count = count || 0 // 重试次数
     // 获取可以提货的商店信息
-    let pickupStoreInfo = await getStoreCanPickInfo({ partNumber, iPhoneOrderConfig })
-    let storeNumber = pickupStoreInfo.storeNumber
+    let pickupStoreInfo = await getStoreCanPickInfo({ x_aos_stk, partNumber, iPhoneOrderConfig })
+
+    const { storeNumber, availableNowForAllLines } = pickupStoreInfo || {}
     const { host, protocol } = location || {}
 
     if (storeNumber) {
-        // 走第一步， 选店，获取提货时间
-        let canPickupTime = await checkoutSteps({
-            step: CHECKOUT_STEPS.selectStore,
-            x_aos_stk,
-            stepInfo: {
-                storeNumber,
-            },
-            iPhoneOrderConfig,
-        })
-        console.log(`firstStep:`, canPickupTime)
+        if (availableNowForAllLines) {
+            // 所有时间可取货，直接走 checkoutFulfillment
+            let canCheckout = await checkoutSteps({
+                step: CHECKOUT_STEPS.checkoutFulfillment,
+                x_aos_stk,
+                stepInfo: {
+                    storeNumber,
+                },
+                iPhoneOrderConfig,
+            })
 
-        const timeSlot = canPickupTime?.timeSlot as Record<string, any>
-        if (_isEmpty(timeSlot)) return
+            if (!canCheckout?.isSuccess) return
+        } else {
+            // 走第一步， 选店，获取提货时间
+            let canPickupTime = await checkoutSteps({
+                step: CHECKOUT_STEPS.selectStore,
+                x_aos_stk,
+                stepInfo: {
+                    storeNumber,
+                },
+                iPhoneOrderConfig,
+            })
+            console.log(`firstStep:`, canPickupTime)
 
-        // 第二步， 选日期时间
-        let pickupTimeInStore = await checkoutSteps({
-            step: CHECKOUT_STEPS.selectPickupTime,
-            x_aos_stk,
-            stepInfo: {
-                storeNumber,
-                ...timeSlot,
-            },
-            iPhoneOrderConfig,
-        })
+            const timeSlot = canPickupTime?.timeSlot as Record<string, any>
+            if (_isEmpty(timeSlot)) return
 
-        if (!pickupTimeInStore?.isSuccess) return
+            // 第二步， 选日期时间
+            let pickupTimeInStore = await checkoutSteps({
+                step: CHECKOUT_STEPS.selectPickupTime,
+                x_aos_stk,
+                stepInfo: {
+                    storeNumber,
+                    ...timeSlot,
+                },
+                iPhoneOrderConfig,
+            })
 
+            if (!pickupTimeInStore?.isSuccess) return
+        }
         // 第三步 填写证件信息
         let addContactResult = await checkoutSteps({
             step: CHECKOUT_STEPS.pickupContact,

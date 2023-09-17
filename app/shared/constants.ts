@@ -201,12 +201,13 @@ export const fetchHeaders = {
     ...commonHeaders,
     'cache-control': 'no-cache',
     'content-type': 'application/x-www-form-urlencoded',
-    modelversion: 'v2',
+    // 'Content-Type': 'application/x-www-form-urlencoded',
+    Modelversion: 'v2',
     pragma: 'no-cache',
     syntax: 'graviton',
     // "x-aos-model-page": "checkoutPage",
     // "x-aos-stk": x_aos_stk,
-    'x-requested-with': 'Fetch',
+    'X-Requested-With': 'Fetch',
 }
 
 export const defaultAres = {
@@ -216,10 +217,11 @@ export const defaultAres = {
 }
 
 export const CHECKOUT_STEPS = {
-    selectStore: `_a=select&_m=checkout.fulfillment.pickupTab.pickup.storeLocator`,
-    selectPickupTime: `_a=continue&_m=checkout.fulfillment`,
-    pickupContact: `_a=continue&_m=checkout.pickupContact`,
-    selectBill: `_a=selectBillingOptionAction&_m=checkout.billing.billingOptions`,
-    checkoutBill: `_a=continue&_m=checkout.billing`,
-    placeOrder: `_a=continue&_m=checkout.review.placeOrder`,
+    selectStore: `?_a=select&_m=checkout.fulfillment.pickupTab.pickup.storeLocator`,
+    selectPickupTime: `?_a=continue&_m=checkout.fulfillment`,
+    checkoutFulfillment: `?_a=continueFromFulfillmentToPickupContact&_m=checkout.fulfillment`,
+    pickupContact: `?_a=continueFromPickupContactToBilling&_m=checkout.pickupContact`,
+    selectBill: `/billing?_a=selectBillingOptionAction&_m=checkout.billing.billingOptions`,
+    checkoutBill: `/billing?_a=continueFromBillingToReview&_m=checkout.billing`,
+    placeOrder: `?_a=continueFromReviewToProcess&_m=checkout.review.placeOrder`,
 }

@@ -16,8 +16,9 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
     const districtName = iPhoneOrderConfig.districtName || defaultAres.districtName
     const provinceName = iPhoneOrderConfig.provinceName || defaultAres.provinceName
     const cityName = iPhoneOrderConfig.cityName || defaultAres.cityName
-
-    let url = `${protocol}//${host}/shop/checkoutx?` // checkout.fulfillment`
+    const provinceCityDistrict =
+        provinceName == cityName ? cityName + ' ' + districtName : provinceName + ' ' + cityName + ' ' + districtName
+    let url = `${protocol}//${host}/shop/checkoutx` // checkout.fulfillment`
 
     let data = [],
         result,
@@ -27,11 +28,52 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
         method: 'POST',
         headers: {
             ...fetchHeaders,
-            'x-aos-model-page': 'checkoutPage',
-            'x-aos-stk': x_aos_stk,
+            'X-Aos-Model-Page': 'checkoutPage',
+            'X-Aos-Stk': x_aos_stk,
             referrer: `${protocol}//${host}/shop/checkout?_s=Fulfillment-init`,
         },
+        credentials: 'include' as RequestCredentials,
     }
+
+    if (step == CHECKOUT_STEPS.checkoutFulfillment) {
+        console.log(`this step is`, `checkoutFulfillment`)
+        url += step
+
+        const { storeNumber, district = districtName } = stepInfo || {}
+        data = [
+            `checkout.fulfillment.fulfillmentOptions.selectFulfillmentLocation=RETAIL`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.showAllStores=false`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.selectStore=${storeNumber}`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.searchInput=${encodeURIComponent(
+                provinceName + ' ' + cityName + ' ' + district
+            )}`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.city=${encodeURIComponent(
+                cityName
+            )}`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.state=${encodeURIComponent(
+                provinceName
+            )}`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.provinceCityDistrict=${encodeURIComponent(
+                provinceCityDistrict
+            )}`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.countryCode=CN`,
+            `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.district=${encodeURIComponent(
+                district
+            )}`,
+        ]
+        dataString = data.join(`&`)
+        result = await fetch(url, {
+            ...options,
+            body: dataString,
+        })
+        resJson = await result.json()
+        console.log(`resJson`, resJson)
+        const { pickupContact } = resJson?.body?.checkout || {}
+        const { status } = resJson?.head || {}
+        const isSuccess = status == 200
+        return { isSuccess, pickupContact }
+    }
+
     if (step == CHECKOUT_STEPS.selectStore) {
         console.log(`this step is`, `selectStore`)
         url += step
@@ -50,7 +92,7 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
                 provinceName
             )}`,
             `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.provinceCityDistrict=${encodeURIComponent(
-                provinceName + ' ' + district
+                provinceCityDistrict
             )}`,
             `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.countryCode=CN`,
             `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.district=${encodeURIComponent(
@@ -140,7 +182,7 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
                 provinceName
             )}`,
             `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.provinceCityDistrict=${encodeURIComponent(
-                provinceName + ' ' + district
+                provinceCityDistrict
             )}`,
             `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.countryCode=CN`,
             `checkout.fulfillment.pickupTab.pickup.storeLocator.address.stateCitySelectorForCheckout.district=${encodeURIComponent(
