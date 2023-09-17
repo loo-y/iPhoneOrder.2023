@@ -21,6 +21,12 @@
     "background": {
         "service_worker": "service-worker.js"
     },
+    "web_accessible_resources": [
+        {
+          "resources": ["inject-script.js"],
+          "matches": ["https://*.apple.com.cn/*"]
+        }
+    ],
     "content_scripts": [
         {
           "js": ["content-script.js"],

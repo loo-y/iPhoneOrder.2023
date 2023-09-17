@@ -24,6 +24,10 @@ import { restoreFromStorage } from '@/app/shared/util'
 // }
 
 const doFroApplePages = async (url?: string) => {
+    const orderEnabled = !!(await restoreFromStorage(storeKeys.orderEnabled))
+    console.log(`orderEnabled in doForApplePages`, orderEnabled)
+    if (!orderEnabled) return
+
     const iPhoneOrderConfig: IPHONEORDER_CONFIG = await restoreFromStorage(storeKeys.orderConfig)
     await sleep(0.5)
 

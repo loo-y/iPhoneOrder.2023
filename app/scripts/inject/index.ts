@@ -1,35 +1,18 @@
-import { iPhoneModels } from '@/app/shared/constants'
-import doFroApplePages from '../content/doFroApplePages'
-import { restoreFromStorage } from '@/app/shared/util'
-import { storeKeys } from '@/app/shared/constants'
+;(function (history) {
+    var originalPushState = history.pushState
 
-console.log(`this is inject`)
-// TODO: it's not work, need try to another way.
-const injectRun = async () => {
-    const orderEnabled = !!(await restoreFromStorage(storeKeys.orderEnabled))
-    console.log(`orderEnabled`, orderEnabled)
-    if (!orderEnabled) return
-    // 重写pushStae方法，用来监听
-    let pushState = window.history.pushState
-    console.log(`history`, window.history.pushState)
-    window.history.pushState = async function (...args) {
-        const state = args[0]
-        if (typeof window.history.onpushstate == 'function') {
-            window.history.onpushstate({ state: state })
+    history.pushState = function (state, title, url) {
+        if (typeof history.onpushstate == 'function') {
+            history.onpushstate({ state: state })
         }
 
-        console.log(`arguments`, args)
-        let url: string = (args[2] as string) || ''
+        // @ts-ignore
         url = url && url.search(/^http/) > -1 ? url : ''
 
-        let pushResult = pushState.apply(window.history, args)
-        console.log(`history`, window.history.length, location.href)
-
-        await doFroApplePages(url)
-        return pushResult
+        window.postMessage({ action: 'doFroApplePages', url: url }, '*')
+        // 调用原生的 history.pushState 方法
+        // @ts-ignore
+        return originalPushState.apply(history, arguments)
     }
-    console.log(`history`, window.history.pushState)
-    console.log(`history`, history.pushState)
-}
-
-export default injectRun
+    console.log(history.pushState)
+})(history)

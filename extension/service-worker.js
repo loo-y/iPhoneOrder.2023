@@ -28,7 +28,7 @@ chrome.action.onClicked.addListener(async tab => {
                     world: 'MAIN',
                     args: [{ command, tabUrl: url.href }],
                     func: (...args) => {
-                        injectScript(...args)
+                        // injectScript(...args)
                     },
                 })
             }
