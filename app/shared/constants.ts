@@ -218,7 +218,7 @@ export const defaultAres = {
 
 export const CHECKOUT_STEPS = {
     selectStore: `?_a=select&_m=checkout.fulfillment.pickupTab.pickup.storeLocator`,
-    selectPickupTime: `?_a=continue&_m=checkout.fulfillment`,
+    selectPickupTime: `?_a=continueFromFulfillmentToPickupContact&_m=checkout.fulfillment`,
     checkoutFulfillment: `?_a=continueFromFulfillmentToPickupContact&_m=checkout.fulfillment`,
     pickupContact: `?_a=continueFromPickupContactToBilling&_m=checkout.pickupContact`,
     selectBill: `/billing?_a=selectBillingOptionAction&_m=checkout.billing.billingOptions`,

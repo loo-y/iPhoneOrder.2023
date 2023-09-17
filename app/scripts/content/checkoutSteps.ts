@@ -9,9 +9,10 @@ interface ICheckoutStepsProps {
     x_aos_stk: string
     stepInfo: Record<string, any>
     iPhoneOrderConfig: IPHONEORDER_CONFIG
+    noNeedTimeSlot?: boolean
 }
 
-const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: ICheckoutStepsProps) => {
+const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig, noNeedTimeSlot }: ICheckoutStepsProps) => {
     const { host, protocol } = window.location || {}
     const districtName = iPhoneOrderConfig.districtName || defaultAres.districtName
     const provinceName = iPhoneOrderConfig.provinceName || defaultAres.provinceName
@@ -35,7 +36,7 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
         credentials: 'include' as RequestCredentials,
     }
 
-    if (step == CHECKOUT_STEPS.checkoutFulfillment) {
+    if (noNeedTimeSlot && step == CHECKOUT_STEPS.checkoutFulfillment) {
         console.log(`this step is`, `checkoutFulfillment`)
         url += step
 
@@ -107,9 +108,10 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
         resJson = await result.json()
         console.log(`resJson`, resJson)
         const { fulfillment } = resJson?.body?.checkout || {}
+        const noNeedTimeSlot = _isEmpty(fulfillment?.pickupTab?.pickup?.timeSlot)
         const { pickUpDates, timeSlotWindows } = fulfillment?.pickupTab?.pickup?.timeSlot?.dateTimeSlots?.d || {}
 
-        if (_isEmpty(timeSlotWindows)) return {}
+        if (!noNeedTimeSlot && _isEmpty(timeSlotWindows)) return { isSuccess: false }
 
         let dayRadio,
             selectTimeSLot: Record<string, any> = {}
@@ -148,7 +150,8 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig }: I
             pickUpDates,
             timeSlotWindows,
             timeSlot: selectTimeSLot,
-            isSuccess: !_isEmpty(selectTimeSLot),
+            noNeedTimeSlot,
+            isSuccess: noNeedTimeSlot || !_isEmpty(selectTimeSLot),
         }
     }
     if (step == CHECKOUT_STEPS.selectPickupTime) {
