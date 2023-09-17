@@ -1,5 +1,11 @@
 import { sleep, changeInputValue, getElemByID } from '@/app/shared/util'
-import { applePageUrl, pageElementsId, storeKeys, prefixBillingoptions } from '@/app/shared/constants'
+import {
+    applePageUrl,
+    pageElementsId,
+    storeKeys,
+    prefixBillingoptions,
+    iframeMessagePass,
+} from '@/app/shared/constants'
 import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
 import getPageInitInfo from './getPageInitInfo'
 import goOrderSteps from './goOrderSteps'
@@ -26,7 +32,17 @@ import { restoreFromStorage } from '@/app/shared/util'
 const doFroApplePages = async (url?: string) => {
     const orderEnabled = !!(await restoreFromStorage(storeKeys.orderEnabled))
     console.log(`orderEnabled in doForApplePages`, orderEnabled)
-    if (!orderEnabled) return
+    let iframeContainer = document?.getElementById(iframeMessagePass.iframeID) as HTMLIFrameElement
+    if (!orderEnabled) {
+        if (iframeContainer) {
+            iframeContainer.style.display = 'none'
+        }
+        return
+    }
+
+    if (iframeContainer) {
+        iframeContainer.style.display = ''
+    }
 
     const iPhoneOrderConfig: IPHONEORDER_CONFIG = await restoreFromStorage(storeKeys.orderConfig)
     await sleep(0.5)
@@ -157,7 +173,6 @@ const doFroApplePages = async (url?: string) => {
                     const dataAutom = `${payBillBtnInput.id}-${payInstallment}`.replace(`${prefixBillingoptions}.`, '')
                     const payInstallmentBtnInput = document.querySelector(`input[data-autom="${dataAutom}"]`)
                     console.log(`payInstallmentBtnInput`, payInstallmentBtnInput, `input[data-autom="${dataAutom}"]`)
-
                     ;(payInstallmentBtnInput as HTMLInputElement)?.click()
                 }
             } else if (alipayBtnInput) {

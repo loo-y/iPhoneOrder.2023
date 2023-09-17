@@ -14,9 +14,16 @@ const Tips = () => {
         })
     }, [])
 
-    if (!fetchCount) return <div></div>
+    const bgTransparent = `body{background: transparent}`
+    if (!fetchCount)
+        return (
+            <div>
+                <style>{bgTransparent}</style>
+            </div>
+        )
     return (
         <main className="flex w-52 h-fit flex-col  text-gray-700 items-center gap-1 px-2  justify-between py-2 mx-auto rounded-lg bg-slate-100 text-base font-bold cursor-pointer shadow-slate-500/50  shadow-lg">
+            <style>{bgTransparent}</style>
             <div className="flex flex-row gap-0 h-8 items-center justify-center py-2 ">
                 <div className="  ">
                     当前正在重试：
