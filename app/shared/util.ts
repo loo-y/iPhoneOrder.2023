@@ -10,6 +10,24 @@ export const sleep = async (sec: number | string, markText?: string) => {
     })
 }
 
+interface IRandomSleepProps {
+    min?: number
+    max: number
+    markText?: string
+}
+export const randomSleep = async ({ min, max, markText }: IRandomSleepProps) => {
+    console.log(`sleep seconds =>`, `min: ${min}`, `max: ${max}`, markText || '')
+    const sec = (min || 0) + Math.random() * max
+    return new Promise((resolve, reject) => {
+        setTimeout(
+            () => {
+                resolve(true)
+            },
+            Number(sec) * 1000
+        )
+    })
+}
+
 export const changeInputValue = (inputDom?: HTMLInputElement, newText?: any) => {
     if (!inputDom) return
     let lastvalue = inputDom.value
