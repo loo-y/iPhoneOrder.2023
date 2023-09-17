@@ -1,9 +1,10 @@
 import getStoreCanPickInfo from './getStoreCanPickInfo'
 import checkoutSteps from './checkoutSteps'
 import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
-import { CHECKOUT_STEPS, BILL_OPTIONS_TYPE, afterCountThenReload } from '@/app/shared/constants'
+import { CHECKOUT_STEPS, BILL_OPTIONS_TYPE } from '@/app/shared/constants'
 import { sleep } from '@/app/shared/util'
 import { isEmpty as _isEmpty, each as _each, some as _some } from 'lodash'
+import { iframeMessagePass } from '@/app/shared/constants'
 
 interface IGoOrderSteps {
     partNumber: string
@@ -13,7 +14,13 @@ interface IGoOrderSteps {
 }
 
 const goOrderSteps = async ({ partNumber, x_aos_stk, count, iPhoneOrderConfig }: IGoOrderSteps) => {
-    count = count || 0 // 重试次数
+    count = count || 1 // 重试次数
+    const { afterCountThenReload = 50 } = iPhoneOrderConfig || {}
+    // ********** 发送消息给 tips page **********
+    const iframeWindow = (document?.getElementById(iframeMessagePass.iframeID) as HTMLIFrameElement)?.contentWindow
+    const message = { action: iframeMessagePass.messageAction, count: count, beforeReload: afterCountThenReload }
+    iframeWindow?.postMessage(message, '*')
+
     // 获取可以提货的商店信息
     let pickupStoreInfo = await getStoreCanPickInfo({ x_aos_stk, partNumber, iPhoneOrderConfig })
 
@@ -157,7 +164,7 @@ const goOrderSteps = async ({ partNumber, x_aos_stk, count, iPhoneOrderConfig }:
 
             location.href = jumpUrl
         }
-    } else if (count > afterCountThenReload) {
+    } else if (count >= afterCountThenReload) {
         await sleep(1, `goOrderSteps failed over ${afterCountThenReload} times, then reload page`)
         location.reload()
     } else {

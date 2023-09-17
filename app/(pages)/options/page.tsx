@@ -32,6 +32,7 @@ export default function Options() {
     const appleidRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
     const stepWaitRef = useRef<HTMLInputElement>(null)
+    const beforeReloadCountRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         restoreFromStorage(storeKeys.orderConfig).then(data => {
@@ -226,6 +227,7 @@ export default function Options() {
             appleId: appleidRef.current?.value,
             password: passwordRef.current?.value,
             stepWait: Number(stepWaitRef.current?.value) || config.stepWait || 10,
+            afterCountThenReload: Number(beforeReloadCountRef.current?.value) || config.afterCountThenReload || 50,
         }
         console.log(saveConfig)
         saveAsync(saveConfig)
@@ -433,6 +435,25 @@ export default function Options() {
                                     step={0.5}
                                     type="number"
                                     defaultValue={config.stepWait}
+                                    className={inputClass}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-3">
+                            <label htmlFor="beforereload-count" className={labelClass}>
+                                每周期重试次数 (默认50，后台请求达到该次数才会刷新页面，防止签名过期)
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    ref={beforeReloadCountRef}
+                                    id={'beforereload-count'}
+                                    min={1}
+                                    max={100}
+                                    step={1}
+                                    type="number"
+                                    defaultValue={config.afterCountThenReload}
                                     className={inputClass}
                                 />
                             </div>

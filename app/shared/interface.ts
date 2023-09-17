@@ -12,4 +12,5 @@ export interface IPHONEORDER_CONFIG {
     cityName?: string
     districtName?: string
     employeeId?: string
+    afterCountThenReload: number
 }

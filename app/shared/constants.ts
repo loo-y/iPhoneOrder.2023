@@ -107,9 +107,6 @@ export const pageElementsId = {
 
 // ********** 👆page Element👆 **********
 
-// 重试次数超过之后重新刷新页面
-export const afterCountThenReload = 50
-
 // 付款方式
 export enum BILL_OPTIONS_TYPE {
     alipay = `支付宝`,
@@ -154,6 +151,8 @@ export const defaultiPhoneOrderConfig: IPHONEORDER_CONFIG = {
     stepWait: 10,
     // @ts-ignore
     payBill: billTypeKeys.alipay,
+
+    afterCountThenReload: 50, // 重试次数超过之后重新刷新页面
 }
 
 export const defaultPayinstallmentTotal = [
@@ -224,4 +223,9 @@ export const CHECKOUT_STEPS = {
     selectBill: `/billing?_a=selectBillingOptionAction&_m=checkout.billing.billingOptions`,
     checkoutBill: `/billing?_a=continueFromBillingToReview&_m=checkout.billing`,
     placeOrder: `?_a=continueFromReviewToProcess&_m=checkout.review.placeOrder`,
+}
+
+export const iframeMessagePass = {
+    iframeID: 'tips_iframe',
+    messageAction: 'updateFetchCount',
 }
