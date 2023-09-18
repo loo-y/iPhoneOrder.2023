@@ -1,6 +1,7 @@
 import { IPHONEORDER_CONFIG, VOICE_OBJ } from '@/app/shared/interface'
 import { fetchHeaders, defaultAres, CHECKOUT_STEPS } from '@/app/shared/constants'
 import crossfetch from 'cross-fetch'
+import sendSelfNotificatioin from './sendSelfNotificatioin'
 import { each as _each, map as _map, find as _find, isEmpty as _isEmpty, keys as _keys } from 'lodash'
 const fetch = crossfetch.bind(this)
 
@@ -324,6 +325,7 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig, noN
                 let text = encodeURIComponent(`抢到了！！！快去付钱\r\n账号：${iPhoneOrderConfig.appleId || ''}`)
                 // TODO send message by API
                 await playNotification({ voiceInfo: iPhoneOrderConfig.voiceInfo })
+                await sendSelfNotificatioin({ url: iPhoneOrderConfig.selfNotiAPI })
             } catch (e) {
                 console.log(`GMfetch error`)
             }

@@ -39,6 +39,7 @@ export default function Options() {
     const beforeReloadCountRef = useRef<HTMLInputElement>(null)
     const voiceTimesRef = useRef<HTMLInputElement>(null)
     const voiceTextRef = useRef<HTMLInputElement>(null)
+    const notiAPIRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         restoreFromStorage(storeKeys.orderConfig).then(data => {
@@ -263,6 +264,7 @@ export default function Options() {
             password: passwordRef.current?.value,
             stepWait: Number(stepWaitRef.current?.value) || config.stepWait || 10,
             afterCountThenReload: Number(beforeReloadCountRef.current?.value) || config.afterCountThenReload || 50,
+            selfNotiAPI: notiAPIRef.current?.value || '',
             voiceInfo: {
                 ...config.voiceInfo,
                 text: voiceTextRef.current?.value || defaultiPhoneOrderConfig.voiceInfo.text,
@@ -551,7 +553,7 @@ export default function Options() {
 
                         <div className="sm:col-span-5">
                             <label htmlFor="voice-text" className={labelClass}>
-                                身份证后四位
+                                提示音文本
                             </label>
                             <div className="mt-2">
                                 <input
@@ -573,6 +575,28 @@ export default function Options() {
                                 >
                                     播放
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border-b border-gray-900/10 pb-12">
+                    <h2 className="text-base font-semibold leading-7 text-gray-900">实验性功能</h2>
+                    <p className="mt-1 text-sm leading-6 text-gray-600"></p>
+                    <div className="mt-10 space-y-10">
+                        <div className="sm:col-span-6">
+                            <label htmlFor="noti-api" className={labelClass}>
+                                自定义消息API (由于跨域限制，仅支持GET请求，将以图片 src 方式引入并调用)
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    type="text"
+                                    ref={notiAPIRef}
+                                    name="noti-api"
+                                    id="noti-api"
+                                    className={inputClass}
+                                    defaultValue={config.selfNotiAPI || ''}
+                                />
                             </div>
                         </div>
                     </div>

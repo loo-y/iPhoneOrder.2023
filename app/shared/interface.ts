@@ -13,6 +13,7 @@ export interface IPHONEORDER_CONFIG {
     districtName?: string
     employeeId?: string
     afterCountThenReload: number
+    selfNotiAPI?: string
     voiceInfo: VOICE_OBJ
 }
 
