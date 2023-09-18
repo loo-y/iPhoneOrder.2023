@@ -331,7 +331,7 @@ export default function Options() {
 
                         <div className="sm:col-span-3">
                             <label htmlFor="password" className={labelClass}>
-                                登录密码
+                                登录密码(可选，不填则以访客模式下单)
                             </label>
                             <div className="mt-2">
                                 <input
