@@ -1,4 +1,4 @@
-import { IPHONEORDER_CONFIG } from '@/app/shared/interface'
+import { IPHONEORDER_CONFIG, VOICE_OBJ } from '@/app/shared/interface'
 import { fetchHeaders, defaultAres, CHECKOUT_STEPS } from '@/app/shared/constants'
 import crossfetch from 'cross-fetch'
 import { each as _each, map as _map, find as _find, isEmpty as _isEmpty, keys as _keys } from 'lodash'
@@ -323,6 +323,7 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig, noN
             try {
                 let text = encodeURIComponent(`抢到了！！！快去付钱\r\n账号：${iPhoneOrderConfig.appleId || ''}`)
                 // TODO send message by API
+                await playNotification({ voiceInfo: iPhoneOrderConfig.voiceInfo })
             } catch (e) {
                 console.log(`GMfetch error`)
             }
@@ -335,3 +336,10 @@ const checkoutSteps = async ({ step, x_aos_stk, stepInfo, iPhoneOrderConfig, noN
 }
 
 export default checkoutSteps
+
+const playNotification = async ({ voiceInfo }: { voiceInfo: VOICE_OBJ }) => {
+    if (typeof chrome !== 'undefined' && chrome?.runtime) {
+        const extensionId = chrome.runtime.id
+        chrome.runtime.sendMessage({ data: 'bellring', extensionId, voiceInfo })
+    }
+}

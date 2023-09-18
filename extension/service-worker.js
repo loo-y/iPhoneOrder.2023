@@ -3,6 +3,11 @@ const Match_URL = ['apple.com.cn']
 const mainPage = './dist/main.html'
 const optionsPage = './dist/options.html'
 
+const defaultVoiceInfo = {
+    text: `抢到了`,
+    times: 1,
+}
+
 chrome.action.onClicked.addListener(async tab => {
     console.log(`chrome action onClicked`)
     if (!tab.url) return
@@ -35,3 +40,23 @@ chrome.action.onClicked.addListener(async tab => {
         )
     }
 })
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    const {
+        data,  extensionId, voiceInfo
+    } = message || {}
+    const { text, times, lang, voiceName} = voiceInfo || {}
+    if((data == 'bellring') && extensionId &&  text && times){
+        let voiceOption = {}
+        if(lang && voiceName){
+            voiceOption = {
+                lang, voiceName
+            }
+        }
+        chrome.tts.speak(text, voiceOption);
+        // 播放N次
+        for(let s=1; s<times; s++){
+            chrome.tts.speak(text, voiceOption, {'enqueue': true})
+        }
+    }
+  });

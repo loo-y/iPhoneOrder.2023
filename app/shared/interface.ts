@@ -16,7 +16,7 @@ export interface IPHONEORDER_CONFIG {
     voiceInfo: VOICE_OBJ
 }
 
-interface VOICE_OBJ {
+export interface VOICE_OBJ {
     text: string
     voiceName?: string
     lang?: string
