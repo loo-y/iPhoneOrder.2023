@@ -17,6 +17,9 @@
 [更新日志以及遗留问题](#update_info)
 <br/>
 
+[如何自行打包](#fork_change)
+<br/>
+
 [安装和使用](#install)
 <br />
 
@@ -80,6 +83,23 @@
 - **Q:**  抢购成功率高吗？<br />
   **A:**  插件的功能只是捡漏，如果其他人有更快的秒杀工具，此插件应该没什么优势。捡不到是正常，请放平心态。
 <br />
+<br />
+
+<a id="fork_change"></a>
+
+### 如何自行打包
+如果你是一名程序员，你想自己二次开发：
+
+本项目前端框架使用 Nextjs + tailwind CSS， 打包和安装通过 [Bun](https://github.com/oven-sh/bun)，可以先去 Bun 网站查看如何安装。
+
+Bun 和 node + npm 的差异并不是很大，如果你之前是一名程序员，应该不难上手。
+
+如果实在不想使用 Bun，也可以通过 npm 安装。但 bunBuild.ts 这部分的代码需要自行调整。 另外 package.json 中的 script 也包含了部分 Bun 命令，可以使用 npm 替换。
+
+如果你已安装好 Bun，那么在修改完代码之后，只需执行 ```bun build:extension``` 即可。 此命令会自行打包文件至 extension 文件夹， 并且生成 zip 包。
+
+以上基于 Mac (Apple silicon) 环境， 如果是 windows，部分命令可能需要再次调整。
+
 <br />
 
 
