@@ -13,4 +13,12 @@ export interface IPHONEORDER_CONFIG {
     districtName?: string
     employeeId?: string
     afterCountThenReload: number
+    voiceInfo: VOICE_OBJ
+}
+
+interface VOICE_OBJ {
+    text: string
+    voiceName?: string
+    lang?: string
+    times: number
 }

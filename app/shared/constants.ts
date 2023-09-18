@@ -153,6 +153,11 @@ export const defaultiPhoneOrderConfig: IPHONEORDER_CONFIG = {
     payBill: billTypeKeys.alipay,
 
     afterCountThenReload: 50, // 重试次数超过之后重新刷新页面
+
+    voiceInfo: {
+        text: `抢到了`,
+        times: 3,
+    },
 }
 
 export const defaultPayinstallmentTotal = [

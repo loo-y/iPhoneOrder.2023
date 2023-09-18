@@ -10,12 +10,15 @@ import {
 import DropListBox from '@/app/components/DropListBox'
 import { IPHONEORDER_CONFIG } from '@/app/shared/interface'
 import { useCallback, useEffect, useState, useRef, useMemo } from 'react'
-import { filter as _filter, map as _map, find as _find, findIndex as _findIndex } from 'lodash'
+import { filter as _filter, map as _map, find as _find, findIndex as _findIndex, sortBy as _sortBy } from 'lodash'
 import city from '@/app/shared/location/city.json'
 import province from '@/app/shared/location/province.json'
 import county from '@/app/shared/location/county.json'
 
 const defaultItem = { id: '', name: '' }
+
+type VoiceType = { lang?: string; voiceName?: string; id: string; name: string }
+
 export default function Options() {
     const [config, setConfig] = useState<IPHONEORDER_CONFIG>(defaultiPhoneOrderConfig)
     const [payinstallmentList, setpayinstallmentList] = useState([defaultItem])
@@ -25,6 +28,7 @@ export default function Options() {
     const [selectedCityIndex, setSelectedCityIndex] = useState(0)
     const [districtList, setDistrictList] = useState([defaultItem])
     const [selectedDistrictIndex, setSelectedDistrictIndex] = useState(0)
+    const [voiceList, setVoiceList] = useState<VoiceType[]>([defaultItem])
     const firstNameRef = useRef<HTMLInputElement>(null)
     const lastNameRef = useRef<HTMLInputElement>(null)
     const last4codeRef = useRef<HTMLInputElement>(null)
@@ -33,6 +37,8 @@ export default function Options() {
     const passwordRef = useRef<HTMLInputElement>(null)
     const stepWaitRef = useRef<HTMLInputElement>(null)
     const beforeReloadCountRef = useRef<HTMLInputElement>(null)
+    const voiceTimesRef = useRef<HTMLInputElement>(null)
+    const voiceTextRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         restoreFromStorage(storeKeys.orderConfig).then(data => {
@@ -46,8 +52,25 @@ export default function Options() {
                 })
             }
         })
+
+        const syncFun = async () => {
+            const voiceList = await getVoices()
+            setVoiceList(voiceList)
+        }
+        syncFun()
     }, [])
 
+    const voiceSelected = useMemo(() => {
+        let _index = -1
+        const { lang, voiceName } = config?.voiceInfo || {}
+        if (lang && voiceName && voiceList.length) {
+            _index = _findIndex(voiceList, v => {
+                return v.lang == lang && v.voiceName == voiceName
+            })
+        }
+        if (_index < 0) _index = 0
+        return _index
+    }, [voiceList, config.voiceInfo])
     // ************ 更新选中支付方式 ************
     const billSelected = useMemo(() => {
         return (
@@ -217,6 +240,18 @@ export default function Options() {
         })
     }
 
+    const handleSelectVoice = (voiceItem: Record<string, any>) => {
+        setConfig(prev => {
+            return {
+                ...prev,
+                voiceInfo: {
+                    ...prev.voiceInfo,
+                    lang: voiceItem.lang,
+                    voiceName: voiceItem.voiceName,
+                },
+            }
+        })
+    }
     const handleSave = useCallback(() => {
         const saveConfig: IPHONEORDER_CONFIG = {
             ...config,
@@ -228,6 +263,13 @@ export default function Options() {
             password: passwordRef.current?.value,
             stepWait: Number(stepWaitRef.current?.value) || config.stepWait || 10,
             afterCountThenReload: Number(beforeReloadCountRef.current?.value) || config.afterCountThenReload || 50,
+            voiceInfo: {
+                ...config.voiceInfo,
+                text: voiceTextRef.current?.value || defaultiPhoneOrderConfig.voiceInfo.text,
+                voiceName: config.voiceInfo.voiceName || '',
+                lang: config.voiceInfo.lang || '',
+                times: Number(voiceTimesRef.current?.value) || defaultiPhoneOrderConfig.voiceInfo.times,
+            },
         }
         console.log(saveConfig)
         saveAsync(saveConfig)
@@ -236,6 +278,22 @@ export default function Options() {
     const handleCancel = useCallback(() => {
         window.close()
     }, [])
+
+    const handlePlaySound = () => {
+        const _text = voiceTextRef.current?.value || defaultiPhoneOrderConfig.voiceInfo.text,
+            _voiceName = config.voiceInfo.voiceName || '',
+            _lang = config.voiceInfo.lang || ''
+        let voiceOptions = {}
+        if (config.voiceInfo.voiceName && config.voiceInfo.lang) {
+            voiceOptions = {
+                lang: config.voiceInfo.lang,
+                voiceName: config.voiceInfo.voiceName,
+            }
+        }
+        if (typeof chrome !== 'undefined' && chrome?.tts) {
+            chrome.tts.speak(_text, voiceOptions)
+        }
+    }
 
     const inputClass = `px-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`
     const labelClass = `block text-sm font-medium leading-6 text-gray-900`
@@ -298,7 +356,7 @@ export default function Options() {
 
                         <div className="sm:col-span-3">
                             <label htmlFor="last-code" className={labelClass}>
-                                身份后四位
+                                身份证后四位
                             </label>
                             <div className="mt-2">
                                 <input
@@ -439,8 +497,6 @@ export default function Options() {
                                 />
                             </div>
                         </div>
-                    </div>
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-3">
                             <label htmlFor="beforereload-count" className={labelClass}>
                                 每周期重试次数 (默认50，后台请求达到该次数才会刷新页面，防止签名过期)
@@ -456,6 +512,67 @@ export default function Options() {
                                     defaultValue={config.afterCountThenReload}
                                     className={inputClass}
                                 />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-3">
+                            <label htmlFor="voice-list" className={labelClass}>
+                                提示音声音
+                            </label>
+                            <div className="mt-2">
+                                <DropListBox
+                                    itemList={voiceList}
+                                    selectedIndex={voiceSelected}
+                                    domID={'voice-list'}
+                                    callback={handleSelectVoice}
+                                />
+                            </div>
+                        </div>
+                        <div className="sm:col-span-3">
+                            <label htmlFor="voice-times" className={labelClass}>
+                                播放次数
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    ref={voiceTimesRef}
+                                    id="voice-times"
+                                    name="voice-times"
+                                    type="number"
+                                    min={1}
+                                    max={15}
+                                    step={1}
+                                    className={inputClass}
+                                    defaultValue={config.voiceInfo.times}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="sm:col-span-5">
+                            <label htmlFor="voice-text" className={labelClass}>
+                                身份证后四位
+                            </label>
+                            <div className="mt-2">
+                                <input
+                                    type="text"
+                                    ref={voiceTextRef}
+                                    name="voice-text"
+                                    id="voice-text"
+                                    className={inputClass}
+                                    defaultValue={config.voiceInfo.text || ''}
+                                />
+                            </div>
+                        </div>
+                        <div className="sm:col-span-1 align-bottom flex items-end justify-end">
+                            <div className="flex w-1/2 items-end justify-end">
+                                <button
+                                    type="submit"
+                                    className="rounded-md w-full bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    onClick={handlePlaySound}
+                                >
+                                    播放
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -536,4 +653,38 @@ const saveAsync = async (config: IPHONEORDER_CONFIG) => {
     await saveToStorage(config, storeKeys.orderConfig)
     await sleep(1)
     window.close()
+}
+
+const validateVoices = ['zh-cn', 'zh-tw', 'zh-hk', 'en-us', 'en-gb']
+const getVoices = async (): Promise<VoiceType[]> => {
+    let voiceList: VoiceType[] = [defaultItem]
+    if (typeof chrome !== 'undefined' && chrome?.tts) {
+        return new Promise((resolve, reject) => {
+            chrome.tts.getVoices(
+                // @ts-ignore
+                function (voices) {
+                    voiceList = []
+                    _map(voices, v => {
+                        const { lang, voiceName } = v || {}
+                        const prefixlang = lang && lang.toLowerCase()
+                        if (validateVoices.includes(prefixlang)) {
+                            voiceList.push({
+                                lang: lang,
+                                voiceName: voiceName,
+                                name: `${lang} - ${voiceName}`,
+                                id: `${lang} - ${voiceName}`,
+                            })
+                        }
+                    })
+                    voiceList = _sortBy(voiceList, function (o) {
+                        const x = !o?.lang ? 9999 : validateVoices.indexOf(o.lang.toLowerCase())
+                        return x
+                    })
+                    resolve(voiceList)
+                }
+            )
+        })
+    }
+
+    return voiceList
 }
