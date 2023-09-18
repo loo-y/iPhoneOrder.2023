@@ -156,6 +156,10 @@ const goOrderSteps = async ({ partNumber, x_aos_stk, count, iPhoneOrderConfig }:
         })
 
         if (placeOrderRes?.isSuccess) {
+            // 播放音频
+            const audio = new Audio('http://cos.rayjason.cn/audio/beep.mp3')
+            audio.play()
+            
             let jumpUrl = `${protocol}//${host}/shop/checkout/interstitial`
             if (placeOrderRes?.url) {
                 // `${protocol}//${host}/shop/checkout/status`

@@ -44,8 +44,16 @@ const Popup = () => {
             alert(`请先配置必要信息`)
         }
     }
+    const handlePlayAudio = () => {
+        const audio = new Audio('http://cos.rayjason.cn/audio/beep.mp3');
+        audio.play().then(() => {
+            console.log('Audio played successfully');
+        }).catch(error => {
+            console.error('Audio playback failed:', error);
+        });
+    }
     return (
-        <div className="mx-auto my-2 w-[18rem] h-[10rem]">
+        <div className="mx-auto my-2 w-80 h-40">
             <main className="flex w-fit flex-col items-center gap-8 justify-between py-3 px-2 mx-auto mb-2 mt-5">
                 <div className="flex flex-row gap-3 h-10 justify-between mb-2 px-4 py-6 rounded-xl bg-slate-100">
                     <div className="flex text-gray-600 items-center text-base font-bold">开启自动抢购</div>
@@ -58,19 +66,25 @@ const Popup = () => {
                     />
                 </div>
             </main>
-            <div className="w-full flex flex-row justify-center text-center items-center gap-5 text-sm">
-                <div
-                    className={`flex w-1/3 h-9 bg-white text-indigo-500 cursor-pointer bg-opacity-90 border-4 border-t-2 border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:border-t-[3px] hover:border-b-[3px]`}
+            <div className="w-full flex flex-row justify-center text-center items-center gap-4 text-sm p-4">
+                <button
+                    className={`flex w-1/4 h-9 bg-white text-indigo-500 cursor-pointer bg-opacity-90 border-4 border-t-2 border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:border-t-[3px] hover:border-b-[3px]`}
                     onClick={handleOptionClick}
                 >
                     配置
-                </div>
-                <div
-                    className={`flex w-1/3 h-9 ${'bg-indigo-600 cursor-pointer'} bg-opacity-90 border border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:bg-indigo-500`}
+                </button>
+                <button
+                    className={`flex w-1/4 h-9 ${'bg-indigo-600 cursor-pointer'} bg-opacity-90 border border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:bg-indigo-500`}
                     onClick={handleConfirm}
                 >
                     确认
-                </div>
+                </button>
+                <button
+                    className={`flex w-1/4 h-9 ${'bg-indigo-600 cursor-pointer'} bg-opacity-90 border border-indigo-500 rounded-3xl my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:bg-indigo-500`}
+                    onClick={handlePlayAudio}
+                >
+                    试听
+                </button>
             </div>
         </div>
     )
