@@ -4,6 +4,7 @@ import { defaultiPhoneOrderConfig, storeKeys } from '@/app/shared/constants'
 import { useEffect, useState } from 'react'
 import { Match_URL } from '@/app/shared/constants'
 import { IPHONEORDER_CONFIG } from '@/app/shared/interface'
+import SVGPlay from '@/app/components/SVGPlay'
 
 const Popup = () => {
     const [orderEnabled, setOrderEnable] = useState<boolean>(false)
@@ -44,9 +45,34 @@ const Popup = () => {
             alert(`请先配置必要信息`)
         }
     }
+
+    const handleTestNotification = () => {
+        if (typeof chrome !== 'undefined' && chrome?.tabs) {
+            // @ts-ignore
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    data: 'playSystemNotification',
+                    voiceInfo: config?.voiceInfo || {},
+                })
+            })
+            chrome.runtime.sendMessage()
+        }
+
+        console.log(`chrome?.runtime`, chrome?.tabs)
+    }
+
     return (
-        <div className="mx-auto my-2 w-[18rem] h-[10rem]">
-            <main className="flex w-fit flex-col items-center gap-8 justify-between py-3 px-2 mx-auto mb-2 mt-5">
+        <div className="mx-auto mt-1 mb-2 w-[18rem] h-[15rem]">
+            <main className="flex w-fit flex-col items-center gap-2 justify-between py-3 px-2 mx-auto mb-2 mt-2">
+                <div className="flex w-full gap-3 justify-center py-1 mb-2 bg-white border-b border-solid border-slate-300">
+                    <div
+                        className={`flex w-40 h-9 ${'bg-indigo-600 cursor-pointer'} bg-opacity-90 border border-indigo-500 rounded-md my-2 items-center align-middle justify-center text-center min-w-min px-3 hover:shadow-md hover:bg-indigo-500`}
+                        onClick={handleTestNotification}
+                    >
+                        <SVGPlay className="w-5 h-5 mr-2" />
+                        通知测试
+                    </div>
+                </div>
                 <div className="flex flex-row gap-3 h-10 justify-between mb-2 px-4 py-6 rounded-xl bg-slate-100">
                     <div className="flex text-gray-600 items-center text-base font-bold">开启自动抢购</div>
                     <SelectItem

@@ -59,4 +59,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             chrome.tts.speak(text, voiceOption, {'enqueue': true})
         }
     }
-  });
+});

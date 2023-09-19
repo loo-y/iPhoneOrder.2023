@@ -1,5 +1,15 @@
 import doFroApplePages from './doFroApplePages'
 import { iframeMessagePass } from '@/app/shared/constants'
+import playSystemNotification from './playSystemNotifacation'
+
+// @ts-ignore
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    const { data, voiceInfo } = message || {}
+    const { text } = voiceInfo || {}
+    if (data == 'playSystemNotification' && text) {
+        playSystemNotification({ voiceInfo: voiceInfo })
+    }
+})
 
 const addTipsToPage = () => {
     var extensionId = chrome.runtime.id

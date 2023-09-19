@@ -23,7 +23,7 @@
     },
     "web_accessible_resources": [
         {
-          "resources": ["inject-script.js", "dist/tips.html"],
+          "resources": ["inject-script.js", "dist/tips.html", "icons/icon38.png"],
           "matches": ["https://*.apple.com.cn/*"]
         }
     ],
