@@ -118,11 +118,28 @@
 
 <br/>
 
+补充：
+1. 新增浏览器系统通知，请点击插件图标，点击 通知测试 按钮。
+<br/><img src='./public/assets/images/SCR-20230919-ulfn.png' width="350px" />
+
+2. 等待浏览器网址栏左侧弹出询问窗口，点击同意。
+<br/><img src='./public/assets/images/SCR-20230919-uocr.png' width="350px" />
+
+3. 允许通过之后，窗口右侧就会弹出系统通知。(Windows 可能在桌面右下角)
+<br/><img src='./public/assets/images/SCR-20230919-ulzd.png' width="350px" />
+
+4. 之后如果抢到订单，就会弹出通知，避免错过消息。
+
+<br />
+
 ------
 
 <a id="update_info"></a>
 
 ### 更新日志以及遗留问题
+#### 2023.09.19
+v0.10, 新增浏览器系统通知功能。
+
 #### 2023.09.18
 新增 v0.9 版本，该版本新加入语音提醒功能，此功能需要获取 tts 权限，并且限制 Chrome 101 以上版本。
 
