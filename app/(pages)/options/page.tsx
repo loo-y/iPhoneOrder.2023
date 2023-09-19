@@ -480,6 +480,9 @@ export default function Options() {
 
                 <div className="border-b border-gray-900/10 pb-12">
                     <h2 className="text-base font-semibold leading-7 text-gray-900">系统设置</h2>
+                    <h4 className="text-sm font-medium leading-7 text-gray-900">
+                        如果你不了解以下配置应该如何设置，保持默认值即可。
+                    </h4>
                     <p className="mt-1 text-sm leading-6 text-gray-600"></p>
                     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div className="sm:col-span-3">
@@ -582,6 +585,9 @@ export default function Options() {
 
                 <div className="border-b border-gray-900/10 pb-12">
                     <h2 className="text-base font-semibold leading-7 text-gray-900">实验性功能</h2>
+                    <h4 className="text-sm font-medium leading-7 text-gray-900">
+                        如果你不了解以下配置的功能，可以忽略它们。
+                    </h4>
                     <p className="mt-1 text-sm leading-6 text-gray-600"></p>
                     <div className="mt-10 space-y-10">
                         <div className="sm:col-span-6">
