@@ -18,6 +18,7 @@ const removeFile = (filePath: string, isForce?: boolean) => {
                 }
             })
         } catch (e) {
+            console.log('Error removing file catch:', e)
             resolve(false)
         }
     })
@@ -31,7 +32,13 @@ async function bunBuild() {
     const injectScript = path.resolve(__dirname, './app/scripts/inject/')
     const builtInjectScript = path.resolve(outDir, './inject-script.js')
 
-    await Promise.all([removeFile(builtContentScript, true), removeFile(builtInjectScript, true)])
+    const zipFIle = path.resolve(__dirname, './iPhoneOrder.zip')
+
+    await Promise.all([
+        removeFile(builtContentScript, true),
+        removeFile(builtInjectScript, true),
+        removeFile(zipFIle, true),
+    ])
 
     // @ts-ignore
     await Bun.build({
