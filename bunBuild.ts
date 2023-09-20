@@ -1,29 +1,45 @@
-import { rm } from "fs"
-import path from "path"
+const { exec } = require('child_process')
+import path from 'path'
+
+const removeFile = (filePath: string, isForce?: boolean) => {
+    if (!filePath) return
+    return new Promise((resolve, reject) => {
+        const command = `rm ${isForce ? '-rf' : ''} ${filePath}`
+
+        try {
+            // @ts-ignore
+            exec(command, (err, stdout, stderr) => {
+                if (err) {
+                    console.error('Error removing file:', err)
+                    resolve(false)
+                } else {
+                    console.log('File removed successfully', filePath)
+                    resolve(true)
+                }
+            })
+        } catch (e) {
+            resolve(false)
+        }
+    })
+}
 
 async function bunBuild() {
-    const outDir = path.resolve(__dirname, "./extension");
+    const outDir = path.resolve(__dirname, './extension')
     const contentScript = path.resolve(__dirname, './app/scripts/content/')
-    const builtContentScript = path.resolve(outDir, "./out/content-script.js");
+    const builtContentScript = path.resolve(outDir, './content-script.js')
 
     const injectScript = path.resolve(__dirname, './app/scripts/inject/')
-    const builtInjectScript = path.resolve(outDir, "./out/inject-script.js");
+    const builtInjectScript = path.resolve(outDir, './inject-script.js')
 
-    try{
-        rm(builtContentScript, {force: true, recursive: true}, ()=>{})
-        rm(builtInjectScript, {force: true, recursive: true}, ()=>{})
-    }catch(e){
-        console.log(`rm failed, error:`, e)
-    }
-
+    await Promise.all([removeFile(builtContentScript, true), removeFile(builtInjectScript, true)])
 
     // @ts-ignore
     await Bun.build({
         entrypoints: [contentScript, injectScript],
-        target: 'browser', 
+        target: 'browser',
         minify: true,
         outdir: outDir,
-        naming: "[dir]-script.[ext]"
+        naming: '[dir]-script.[ext]',
     })
 }
 
