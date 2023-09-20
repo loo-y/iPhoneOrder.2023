@@ -136,7 +136,7 @@ const getStoreCanPickInfo = async ({
             const { city } = retailAddress || {}
             // 有时候会搜出周边城市，这里用于排除周边城市
             const isInCity = city == cityName
-            if (isInCity && pickupMessages?.length && (storeDisabled || availableNowForAllLines)) {
+            if (isInCity && pickupMessages?.length && (!storeDisabled || availableNowForAllLines)) {
                 pickupStoreInfo = {
                     ...pickupStoreInfo,
                     storeNumber,
