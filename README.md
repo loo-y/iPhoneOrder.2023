@@ -9,11 +9,13 @@
 
 <b>请注意: 本项目采用 [Bun](https://github.com/oven-sh/bun) 进行打包和启动, 与npm略有不同。</b>
 
+<b>现已支持 [npm 打包](#npm_build)<b>
+
 ------
 
 ## 说明
 
-鉴于目前抢购热度已经消退，重新开放 Readme，但为了避免不必要的麻烦，该项目不出包。可以自行查看[如何自行打包](#fork_change)部分进行打包生成插件。
+鉴于目前抢购热度已经消退，重新开放 Readme，但为了避免不必要的麻烦，该项目不出包。可以查看[如何自行打包](#fork_change)部分进行打包生成插件。
 
 You can fork this repository, modify codes or fix bugs by yourself, and build a release.
 
@@ -148,6 +150,10 @@ Thanks.
 <a id="update_info"></a>
 
 ### 更新日志以及遗留问题
+
+### 2023.10.10
+支持 [npm 打包](#npm_build)
+
 #### 2023.10.07
 bun 1.02 有bug导致 node:fs 的异步操作并没有生效，但不影响实际打包。
 
@@ -192,10 +198,21 @@ Bun 和 node + npm 的差异并不是很大，如果你之前是一名程序员�
 
 如果实在不想使用 Bun，也可以通过 npm 安装。但 bunBuild.ts 这部分的代码需要自行调整。 另外 package.json 中的 script 也包含了部分 Bun 命令，可以使用 npm 替换。
 
-如果你已安装好 Bun，和 npm 一样，先```bun install```，然后开始修改代码。在修改完代码之后，只需执行 ```bun build:extension``` 即可。 此命令会自行打包文件至 extension 文件夹， 并且生成 zip 包。
+如果你已安装好 Bun，和 npm 一样，先 ```bun install```，然后开始修改代码。在修改完代码之后，只需执行 ```bun bun:extension``` 即可。 此命令会自行打包文件至 extension 文件夹， 并且生成 zip 包。
 
 以上基于 Mac (Apple silicon) 环境， 如果是 windows，部分命令可能需要再次调整。
 
 <br/>
 
+2023.10.10更新：
+<a id="npm_build"></a>
+目前已支持 npm 打包
+1. 安装
+  ```bash
+  npm install
+  ```
+2. 打包
+  ```bash
+  npm run build:extension
+  ```
 ------
