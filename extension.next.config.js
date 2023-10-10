@@ -7,7 +7,6 @@ const nextConfig = {
     // Optional: Change the output directory `out` -> `dist`
     distDir: 'extension/dist',
     cleanDistDir: true,
-    dir: "./app/main/",
     // after build, we need to move inline script from main.html into a single js file,
     // otherwise, chrome will not allow inline script to run
     assetPrefix: ".",

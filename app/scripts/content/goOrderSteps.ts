@@ -1,10 +1,9 @@
 import getStoreCanPickInfo from './getStoreCanPickInfo'
 import checkoutSteps from './checkoutSteps'
-import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
-import { CHECKOUT_STEPS, BILL_OPTIONS_TYPE } from '@/app/shared/constants'
-import { sleep } from '@/app/shared/util'
+import type { IPHONEORDER_CONFIG } from '../../shared/interface'
+import { CHECKOUT_STEPS, BILL_OPTIONS_TYPE, iframeMessagePass } from '../../shared/constants'
+import { sleep } from '../../shared/util'
 import { isEmpty as _isEmpty, each as _each, some as _some } from 'lodash'
-import { iframeMessagePass } from '@/app/shared/constants'
 
 interface IGoOrderSteps {
     partNumber: string

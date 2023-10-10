@@ -40,8 +40,17 @@ next-env.d.ts
 bun.lockb
 
 
-# extension
+# extension build file
 /extension/dist/
 
-iPhoneOrder.zip
+# iPhoneOrder
 .iphoneorder
+
+# package-lock 
+package-lock.json
+
+# zip file
+*.zip
+
+# license
+*.LICENSE.txt

@@ -1,6 +1,5 @@
 import crossfetch from 'cross-fetch'
-import { applePageUrl } from '@/app/shared/constants'
-import { commonHeaders } from '@/app/shared/constants'
+import { applePageUrl, commonHeaders } from '../../shared/constants'
 
 // fix TypeError: Failed to execute 'fetch' on 'Window': Illegal invocation
 const fetch = crossfetch.bind(this)

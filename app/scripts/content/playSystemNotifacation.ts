@@ -1,4 +1,4 @@
-import { VOICE_OBJ } from '@/app/shared/interface'
+import { VOICE_OBJ } from '../../shared/interface'
 
 const defaultVoiceInfo = {
     text: `抢到了`,

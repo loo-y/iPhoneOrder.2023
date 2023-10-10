@@ -1,5 +1,5 @@
 import doFroApplePages from './doFroApplePages'
-import { iframeMessagePass } from '@/app/shared/constants'
+import { iframeMessagePass } from '../../shared/constants'
 import playSystemNotification from './playSystemNotifacation'
 
 // @ts-ignore

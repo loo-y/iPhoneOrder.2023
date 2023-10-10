@@ -1,5 +1,5 @@
-import { IPHONEORDER_CONFIG, VOICE_OBJ } from '@/app/shared/interface'
-import { fetchHeaders, defaultAres, CHECKOUT_STEPS } from '@/app/shared/constants'
+import { IPHONEORDER_CONFIG, VOICE_OBJ } from '../../shared/interface'
+import { fetchHeaders, defaultAres, CHECKOUT_STEPS } from '../../shared/constants'
 import crossfetch from 'cross-fetch'
 import sendSelfNotificatioin from './sendSelfNotificatioin'
 import playSystemNotification from './playSystemNotifacation'

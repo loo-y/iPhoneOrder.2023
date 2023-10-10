@@ -1,6 +1,6 @@
-import { IPHONEORDER_CONFIG } from '@/app/shared/interface'
-import { applePageUrl, iPhoneModels, fetchHeaders, defaultAres } from '@/app/shared/constants'
-import { sleep, randomSleep } from '@/app/shared/util'
+import { IPHONEORDER_CONFIG } from '../../shared/interface'
+import { applePageUrl, iPhoneModels, fetchHeaders, defaultAres } from '../../shared/constants'
+import { sleep, randomSleep } from '../../shared/util'
 import crossfetch from 'cross-fetch'
 import { each as _each, map as _map } from 'lodash'
 

@@ -1,16 +1,15 @@
-import { sleep, changeInputValue, getElemByID } from '@/app/shared/util'
+import { sleep, changeInputValue, getElemByID, restoreFromStorage } from '../../shared/util'
 import {
     applePageUrl,
     pageElementsId,
     storeKeys,
     prefixBillingoptions,
     iframeMessagePass,
-} from '@/app/shared/constants'
-import type { IPHONEORDER_CONFIG } from '@/app/shared/interface'
+} from '../../shared/constants'
+import type { IPHONEORDER_CONFIG } from '../../shared/interface'
 import getPageInitInfo from './getPageInitInfo'
 import goOrderSteps from './goOrderSteps'
 import { mapValues as _mapValues } from 'lodash'
-import { restoreFromStorage } from '@/app/shared/util'
 
 // let iPhoneOrderConfig: IPHONEORDER_CONFIG = {
 //     lastName: undefined,

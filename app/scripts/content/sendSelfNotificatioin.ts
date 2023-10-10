@@ -1,4 +1,4 @@
-import { sleep } from '@/app/shared/util'
+import { sleep } from '../../shared/util'
 
 const sendSelfNotificatioin = async ({ url }: { url?: string }) => {
     if (!url) return
